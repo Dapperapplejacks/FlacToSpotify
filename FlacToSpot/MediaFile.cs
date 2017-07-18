@@ -7,24 +7,54 @@ using System.IO;
 
 namespace FlacToSpot
 {
-    interface MediaFile
+    class MediaFile
     {
-        string fileName
+
+        #region Properties
+
+        public string fileName
         {
-            get;
-            set;
-        }
-        string path
-        {
-            get;
-            set;
+            get
+            {
+                return fileName;
+            }
+            set
+            {
+                fileName = value;
+            }
         }
 
-        File file
+        public string path
         {
-            get;
-            set;
+            get
+            {
+                return path;
+            }
+            set
+            {
+                path = value;
+            }
         }
-        
+
+        public System.IO.File file
+        {
+            get
+            {
+                return file;
+            }
+            set
+            {
+                file = value;
+            }
+        }
+
+        #endregion
+
+        public MediaFile(string fileName, string path, File file)
+        {
+            this.fileName = fileName;
+            this.path = path;
+            this.file = file;
+        }
     }
 }

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace FlacToSpot
 {
-    class CommentFields
+    class CommentFields : IEnumerable<string>
     {
         #region Properties
 
@@ -43,7 +44,7 @@ namespace FlacToSpot
                 album = value;
             }
         }
-        public int trackNumber
+        public string trackNumber
         {
             get
             {
@@ -178,7 +179,7 @@ namespace FlacToSpot
 
         #endregion
 
-        public CommentFields(string title = "Untitled", string version = "", string album = "", int trackNumber = 0,
+        public CommentFields(string title = "Untitled", string version = "", string album = "", string trackNumber = "0",
                    string artist = "", string performer = "", string copyright = "", string license = "",
                    string organization = "", string description = "", string genre = "", string date = "",
                    string location = "", string contact = "", string ISRC = "")
@@ -202,5 +203,30 @@ namespace FlacToSpot
 
 
 
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            yield return title;
+            yield return version;
+            yield return album;
+            yield return trackNumber;
+            yield return artist;
+            yield return performer;
+            yield return copyright;
+            yield return license;
+            yield return organization;
+            yield return description;
+            yield return genre;
+            yield return date;
+            yield return location;
+            yield return contact;
+            yield return ISRC;
+
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
