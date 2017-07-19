@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace FlacToSpot
 {
     class FlacFile : MediaFile
     {
-        private CommentFields commentFields;
+        private Dictionary<string, string> commentFields;
 
         public FlacFile(string path)
             : base(path)
         {
-            
+            commentFields = new Dictionary<string, string>();
         }
     }
 }

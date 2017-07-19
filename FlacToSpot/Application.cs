@@ -21,7 +21,7 @@ namespace FlacToSpot
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SelectDirClick(object sender, EventArgs e)
         {
             directoryHandler = new DirectoryHandler(GetDirectoryString());
 
@@ -60,8 +60,10 @@ namespace FlacToSpot
             for (int i = 1; i < tableLayoutPanel1.RowCount; i++)
             {
 
-                RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 
-                    100f/tableLayoutPanel1.RowCount-1);
+                //RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 
+                //    100f/tableLayoutPanel1.RowCount-1);
+
+                RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25f);
 
                 tableLayoutPanel1.RowStyles.Add(rowStyle);
 

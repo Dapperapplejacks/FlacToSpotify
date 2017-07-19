@@ -60,7 +60,7 @@
             this.button1.TabIndex = 1;
             this.button1.Text = "Select Directory";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.SelectDirClick);
             // 
             // tableLayoutPanel1
             // 
@@ -80,7 +80,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(686, 254);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(686, 253);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // label3

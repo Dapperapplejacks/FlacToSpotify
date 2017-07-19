@@ -67,7 +67,6 @@
       <DependentUpon>Application.cs</DependentUpon>
     </Compile>
     <Compile Include="IMediaFile.cs" />
-    <Compile Include="CommentFields.cs" />
     <Compile Include="MediaFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
