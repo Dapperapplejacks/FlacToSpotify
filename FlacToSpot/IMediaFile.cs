@@ -19,6 +19,10 @@ namespace FlacToSpot
             get;
             set;
         }
-        
+        string extension
+        {
+            get;
+            set;
+        }
     }
 }

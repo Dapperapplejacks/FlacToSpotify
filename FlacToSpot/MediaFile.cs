@@ -12,38 +12,54 @@ namespace FlacToSpot
 
         #region Properties
 
-        public string fileName
+        private string fileName;
+        private string path;
+        private string extension;
+
+        public string FileName
         {
             get
             {
-                return fileName;
+                return this.fileName;
             }
-            set
+            private set
             {
-                fileName = value;
+                this.fileName = value;
             }
         }
 
-        public string path
+        public string Path
         {
             get
             {
-                return path;
+                return this.path;
             }
-            set
+            private set
             {
-                path = value;
+                this.path = value;
+            }
+        }
+
+        public string Extension
+        {
+            get
+            {
+                return this.extension;
+            }
+            private set
+            {
+                this.extension = value;
             }
         }
 
 
         #endregion
 
-        public MediaFile(string fileName, string path)
+        public MediaFile(string path)
         {
-            this.fileName = fileName;
             this.path = path;
-            
+            fileName = System.IO.Path.GetFileName(path);
+            extension = System.IO.Path.GetExtension(path);
         }
     }
 }
