@@ -36,25 +36,14 @@ namespace FlacToSpot
             }
         }
 
-        public System.IO.File file
-        {
-            get
-            {
-                return file;
-            }
-            set
-            {
-                file = value;
-            }
-        }
 
         #endregion
 
-        public MediaFile(string fileName, string path, File file)
+        public MediaFile(string fileName, string path)
         {
             this.fileName = fileName;
             this.path = path;
-            this.file = file;
+            
         }
     }
 }

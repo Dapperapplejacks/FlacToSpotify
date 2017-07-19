@@ -11,9 +11,9 @@ using System.IO;
 
 namespace FlacToSpot
 {
-    public partial class Form1 : Form
+    public partial class Application : Form
     {
-        public Form1()
+        public Application()
         {
             InitializeComponent();
         }

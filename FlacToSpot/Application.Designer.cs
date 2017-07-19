@@ -1,6 +1,6 @@
 ﻿namespace FlacToSpot
 {
-    partial class Form1
+    partial class Application
     {
         /// <summary>
         /// Required designer variable.

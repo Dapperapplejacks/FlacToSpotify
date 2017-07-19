@@ -19,12 +19,6 @@ namespace FlacToSpot
             get;
             set;
         }
-
-        File file
-        {
-            get;
-            set;
-        }
         
     }
 }

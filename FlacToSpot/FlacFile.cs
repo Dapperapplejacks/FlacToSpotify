@@ -7,7 +7,7 @@ namespace FlacToSpot
     {
         private CommentFields commentFields;
 
-        public FlacFile(CommentFields commentFields, MediaFile file) : base(file.fileName, file.path, file.file)
+        public FlacFile(CommentFields commentFields, MediaFile file) : base(file.fileName, file.path)
         {
             this.commentFields = commentFields;
         }
