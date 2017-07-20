@@ -10,19 +10,22 @@ namespace FlacToSpot
     {
         #region Properties
 
-        public CoverArt coverArt
+        private CoverArt coverArt;
+        private FlacFile[] flacFiles;
+
+        public CoverArt CoverArt
         {
             get
             {
-                return coverArt;
+                return this.coverArt;
             }
             private set
             {
-                coverArt = value;
+                this.coverArt = value;
             }
         }
 
-        public FlacFile[] flacFiles
+        public FlacFile[] FlacFiles
         {
             get
             {
@@ -38,8 +41,8 @@ namespace FlacToSpot
 
         public Album(CoverArt coverArt, FlacFile[] flacFiles)
         {
-            this.coverArt = coverArt;
-            this.flacFiles = flacFiles;
+            CoverArt = coverArt;
+            FlacFiles = flacFiles;
         }
 
     }

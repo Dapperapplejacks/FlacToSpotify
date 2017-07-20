@@ -5,13 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace FlacToSpot
 {
     class ExcelHandler
     {
         private Microsoft.Office.Interop.Excel.Application xlApp;
-        private Workbook xlWorkbook;
+        
 
         public ExcelHandler()
         {
@@ -24,5 +26,12 @@ namespace FlacToSpot
             }
         }
 
+        public ExcelFile ReadFile(string path)
+        {
+            Workbook workbook = xlApp.Workbooks.Open(path);
+
+            return null;
+            
+        }
     }
 }

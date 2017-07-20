@@ -56,9 +56,6 @@ namespace FlacToSpot
         {
             this.path = dirpath;
 
-            IEnumerable<string> test = Directory.EnumerateFiles(dirpath);
-
-
             string[] filePaths = Directory.EnumerateFiles(dirpath).ToArray<string>();
 
             files = new MediaFile[filePaths.Length];
@@ -74,7 +71,8 @@ namespace FlacToSpot
                     case ".flac": case ".FLAC":
                         files[i] = new FlacFile(filePaths[i]);
                         break;
-                    case ".jpeg": case ".JPEG": case ".png": case ".PNG":
+                    case ".jpeg": case ".JPEG": case ".jpg": case ".JPG": 
+                    case ".png": case ".PNG":
                         files[i] = new CoverArt(filePaths[i]);
                         break;
                     default:

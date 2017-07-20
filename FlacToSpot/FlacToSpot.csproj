@@ -57,6 +57,7 @@
     <Compile Include="Album.cs" />
     <Compile Include="CoverArt.cs" />
     <Compile Include="DirectoryHandler.cs" />
+    <Compile Include="ExcelFile.cs" />
     <Compile Include="ExcelHandler.cs" />
     <Compile Include="FlacFile.cs" />
     <Compile Include="FlacReader.cs" />
@@ -68,6 +69,7 @@
     </Compile>
     <Compile Include="IMediaFile.cs" />
     <Compile Include="MediaFile.cs" />
+    <Compile Include="MetaDataExcelFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Application.resx">

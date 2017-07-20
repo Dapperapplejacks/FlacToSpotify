@@ -14,20 +14,35 @@ namespace FlacToSpot
     public partial class Application : Form
     {
 
-        private DirectoryHandler directoryHandler;
+        private DirectoryHandler albumDirectory;
+        private DirectoryHandler destinationDirectory;
+        private ExcelHandler excelHandler;
+        private ExcelFile UPC_UES;
+
 
         public Application()
         {
             InitializeComponent();
+
+            excelHandler = new ExcelHandler();
         }
 
-        private void SelectDirClick(object sender, EventArgs e)
-        {
-            directoryHandler = new DirectoryHandler(GetDirectoryString());
+        #region Select Directory
 
-            this.label1.Text = directoryHandler.Path;
+        private void SelectAlbumDirClick(object sender, EventArgs e)
+        {
+            albumDirectory = new DirectoryHandler(GetDirectoryString());
+
+            this.button1.Text = "Album Directory: " + albumDirectory.Path;
 
             UpdateFileTable();
+        }
+
+        private void DestinationFolderClick(object sender, EventArgs e)
+        {
+            destinationDirectory = new DirectoryHandler(GetDirectoryString());
+
+            this.button4.Text = "Destination Directory: " + destinationDirectory.Path;
         }
 
         private string GetDirectoryString()
@@ -46,6 +61,8 @@ namespace FlacToSpot
             }
         }
 
+        #endregion
+
         private void UpdateFileTable()
         {
 
@@ -55,7 +72,7 @@ namespace FlacToSpot
             tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 
-            tableLayoutPanel1.RowCount = directoryHandler.FileCount + 1;
+            tableLayoutPanel1.RowCount = albumDirectory.FileCount + 1;
 
             for (int i = 1; i < tableLayoutPanel1.RowCount; i++)
             {
@@ -67,8 +84,8 @@ namespace FlacToSpot
 
                 tableLayoutPanel1.RowStyles.Add(rowStyle);
 
-                string fileName = directoryHandler.Files[i-1].FileName;
-                string extension = directoryHandler.Files[i-1].Extension;
+                string fileName = albumDirectory.Files[i-1].FileName;
+                string extension = albumDirectory.Files[i-1].Extension;
 
                 AddLabelToTable(fileName, 0, i);
                 AddLabelToTable(extension, 1, i);
@@ -84,6 +101,51 @@ namespace FlacToSpot
             newLabel.Font = new Font("Microsoft Sans Serif", 12);
             tableLayoutPanel1.Controls.Add(newLabel, col, row);
         }
+
+        
+
+        private void SelectUPCUESFileClick(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Excel Files (*.xlsx; *.xls)|*.xlsx; *.xls";
+            Stream stream = null;
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((stream = ofd.OpenFile()) != null)
+                    {
+                        using (stream)
+                        {
+                            UPC_UES = excelHandler.ReadFile(ofd.FileName);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Could not read file. Error: " + ex.Message);
+                }
+            }
+
+            //Let user pick file
+            //Pull out workbook from file
+            //Make into Excelfile object
+        }
+
+        private void ProcessFilesClick(object sender, EventArgs e)
+        {
+            //Change names of songs
+            //Change name of coverart
+            //Generate metadata file
+            //
+
+        }
+
+        
+
+        
+
 
 
     }
