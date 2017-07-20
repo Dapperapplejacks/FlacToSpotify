@@ -13,15 +13,21 @@ namespace FlacToSpot
 {
     public partial class Application : Form
     {
+
+        private DirectoryHandler directoryHandler;
+
         public Application()
         {
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void SelectDirClick(object sender, EventArgs e)
         {
-            this.label1.Text = GetDirectoryString();
-            
+            directoryHandler = new DirectoryHandler(GetDirectoryString());
+
+            this.label1.Text = directoryHandler.Path;
+
+            UpdateFileTable();
         }
 
         private string GetDirectoryString()
@@ -35,9 +41,50 @@ namespace FlacToSpot
             }
             else
             {
-                //Alarm
+                //TODO: Alarm
                 return "No Directory Selected yet";
             }
-        } 
+        }
+
+        private void UpdateFileTable()
+        {
+
+            tableLayoutPanel1.Controls.Clear();
+            tableLayoutPanel1.RowStyles.Clear();
+            tableLayoutPanel1.Controls.Add(this.label3, 1, 0);
+            tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+
+            tableLayoutPanel1.RowCount = directoryHandler.FileCount + 1;
+
+            for (int i = 1; i < tableLayoutPanel1.RowCount; i++)
+            {
+
+                //RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 
+                //    100f/tableLayoutPanel1.RowCount-1);
+
+                RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25f);
+
+                tableLayoutPanel1.RowStyles.Add(rowStyle);
+
+                string fileName = directoryHandler.Files[i-1].FileName;
+                string extension = directoryHandler.Files[i-1].Extension;
+
+                AddLabelToTable(fileName, 0, i);
+                AddLabelToTable(extension, 1, i);
+
+            }
+        }
+
+        private void AddLabelToTable(string text, int col, int row)
+        {
+            Label newLabel = new Label();
+            newLabel.Text = text;
+            newLabel.AutoSize = true;
+            newLabel.Font = new Font("Microsoft Sans Serif", 12);
+            tableLayoutPanel1.Controls.Add(newLabel, col, row);
+        }
+
+
     }
 }
