@@ -8,10 +8,10 @@ namespace FlacToSpot
 {
     class CoverArt : MediaFile
     {
-        public CoverArt(string path)
+
+        public CoverArt(string path, string name)
             : base(path)
         {
-
         }
     }
 }

@@ -14,10 +14,9 @@ namespace FlacToSpot
     public partial class Application : Form
     {
 
-        private DirectoryHandler albumDirectory;
-        private DirectoryHandler destinationDirectory;
+        private DirectoryHandler dirHandler;
         private ExcelHandler excelHandler;
-        private ExcelFile UPC_UES;
+        private Manifest UPC_UES;
 
 
         public Application()
@@ -31,18 +30,27 @@ namespace FlacToSpot
 
         private void SelectAlbumDirClick(object sender, EventArgs e)
         {
-            albumDirectory = new DirectoryHandler(GetDirectoryString());
+            try
+            {
+                dirHandler = new DirectoryHandler(GetDirectoryString());
+                this.button1.Text = "Album Directory: " + dirHandler.Album.Path;
 
-            this.button1.Text = "Album Directory: " + albumDirectory.Path;
+                UpdateFileTable();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: {0}", ex.Message);
+            }
+            
 
-            UpdateFileTable();
+            
         }
 
         private void DestinationFolderClick(object sender, EventArgs e)
         {
-            destinationDirectory = new DirectoryHandler(GetDirectoryString());
+            dirHandler.DestinationDirectory = GetDirectoryString();
 
-            this.button4.Text = "Destination Directory: " + destinationDirectory.Path;
+            this.button4.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
         }
 
         private string GetDirectoryString()
@@ -72,7 +80,7 @@ namespace FlacToSpot
             tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 
-            tableLayoutPanel1.RowCount = albumDirectory.FileCount + 1;
+            tableLayoutPanel1.RowCount = dirHandler.Files.Count() + 1;
 
             for (int i = 1; i < tableLayoutPanel1.RowCount; i++)
             {
@@ -84,8 +92,8 @@ namespace FlacToSpot
 
                 tableLayoutPanel1.RowStyles.Add(rowStyle);
 
-                string fileName = albumDirectory.Files[i-1].FileName;
-                string extension = albumDirectory.Files[i-1].Extension;
+                string fileName = dirHandler.Files[i-1].FileName;
+                string extension = dirHandler.Files[i-1].Extension;
 
                 AddLabelToTable(fileName, 0, i);
                 AddLabelToTable(extension, 1, i);
@@ -102,8 +110,6 @@ namespace FlacToSpot
             tableLayoutPanel1.Controls.Add(newLabel, col, row);
         }
 
-        
-
         private void SelectUPCUESFileClick(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -118,7 +124,8 @@ namespace FlacToSpot
                     {
                         using (stream)
                         {
-                            UPC_UES = excelHandler.ReadFile(ofd.FileName);
+                            UPC_UES = excelHandler.ReadManifest(ofd.FileName);
+                            button2.Text = Path.GetFileName(ofd.FileName);
                         }
                     }
                 }
@@ -127,22 +134,28 @@ namespace FlacToSpot
                     MessageBox.Show("Could not read file. Error: " + ex.Message);
                 }
             }
-
-            //Let user pick file
-            //Pull out workbook from file
-            //Make into Excelfile object
         }
 
         private void ProcessFilesClick(object sender, EventArgs e)
         {
-            //Change names of songs
-            //Change name of coverart
-            //Generate metadata file
-            //
+           
+            /*Create new directory as Delivery Folder (name being date YYYYMMDD_XX where XX is for multiple deliveries in a day)
+             * Child of Delivery folder is Album folder with name as name of Album
+             * 
+            */
+            try
+            {
+                dirHandler.ProcessAlbum(progressBar1);
+                excelHandler.CreateMetaData(dirHandler.DestinationDirectory);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: {0}", ex.Message);
+            }
+            
+            
 
         }
-
-        
 
         
 

@@ -22,9 +22,11 @@ namespace FlacToSpot
             {
                 return this.fileName;
             }
-            private set
+            set
             {
+                File.Move(fileName, value);
                 this.fileName = value;
+                
             }
         }
 
@@ -34,7 +36,7 @@ namespace FlacToSpot
             {
                 return this.path;
             }
-            private set
+            set
             {
                 this.path = value;
             }

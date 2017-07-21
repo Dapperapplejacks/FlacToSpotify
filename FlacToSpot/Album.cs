@@ -9,9 +9,8 @@ namespace FlacToSpot
     class Album
     {
         #region Properties
-
+        private CD[] CDs;
         private CoverArt coverArt;
-        private FlacFile[] flacFiles;
 
         public CoverArt CoverArt
         {
@@ -24,25 +23,39 @@ namespace FlacToSpot
                 this.coverArt = value;
             }
         }
-
-        public FlacFile[] FlacFiles
+        
+        private string path;
+        public string Path
         {
             get
             {
-                return flacFiles;
+                return path;
             }
             private set
             {
-                flacFiles = value;
+                path = value;
             }
         }
 
         #endregion
 
-        public Album(CoverArt coverArt, FlacFile[] flacFiles)
+        public Album(CoverArt coverArt, FlacFile[] flacFiles, string path)
         {
             CoverArt = coverArt;
             FlacFiles = flacFiles;
+            this.path = path;
+        }
+
+        public string GetAlbumName()
+        {
+            if (flacFiles[0] != null)
+            {
+                return flacFiles[0].Tag.Album;
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

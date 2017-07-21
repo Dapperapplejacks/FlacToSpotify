@@ -35,6 +35,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -118,10 +119,11 @@
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.Location = new System.Drawing.Point(0, 351);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(484, 98);
+            this.button3.Size = new System.Drawing.Size(484, 70);
             this.button3.TabIndex = 4;
             this.button3.Text = "Process Files";
             this.button3.UseVisualStyleBackColor = false;
+            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.ProcessFilesClick);
             // 
             // button4
@@ -137,6 +139,13 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.DestinationFolderClick);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 427);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(460, 23);
+            this.progressBar1.TabIndex = 6;
+            // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -144,6 +153,7 @@
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(484, 461);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -170,6 +180,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

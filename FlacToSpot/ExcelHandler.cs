@@ -26,12 +26,17 @@ namespace FlacToSpot
             }
         }
 
-        public ExcelFile ReadFile(string path)
+        public Manifest ReadManifest(string path)
         {
-            Workbook workbook = xlApp.Workbooks.Open(path);
-
-            return null;
+            Workbook workbook = xlApp.Workbooks.Open(path, Type.Missing, true);
+            return new Manifest(workbook);
             
         }
+
+        public void CreateMetaData(string path)
+        {
+
+        }
+
     }
 }
