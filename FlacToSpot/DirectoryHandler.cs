@@ -15,7 +15,6 @@ namespace FlacToSpot
         #region Properties
         
         private Album album;
-        private int flacCount;
         private string albumDirPath;
         private string destDirPath;
         private MediaFile[] files;
@@ -63,73 +62,21 @@ namespace FlacToSpot
 
         public DirectoryHandler(string dirpath)
         {
-            
-            this.files = GetAlbumFiles(dirpath);
-            CoverArt coverArt = null;
-            FlacFile[] flacFiles = new FlacFile[flacCount]; 
-
-            int f = 0;
-            foreach(MediaFile file in files)
-            {
-                if(file is FlacFile)
-                {
-                    flacFiles[f++] = (FlacFile) file;
-                }
-                else if(file is CoverArt)
-                {
-                    coverArt = (CoverArt) file;
-                }
-            }
-
-            if (coverArt == null)
-            {
-                throw new Exception("No cover art found");
-            }
-            if (flacCount <= 0 || flacFiles.Length <= 0)
-            {
-                throw new Exception("No FLAC files found");
-            }
-
-            album = new Album(coverArt, flacFiles, dirpath);
-        }
-
-        private MediaFile[] GetAlbumFiles(string dirpath)
-        {
             albumDirPath = dirpath;
 
-            string[] filePaths = Directory.EnumerateFiles(dirpath).ToArray<string>();
-
-            MediaFile[] files = new MediaFile[filePaths.Length];
-
-            System.Console.WriteLine("Files:");
-
-            for (int i = 0; i < files.Length; i++)
+            try
             {
-                switch (System.IO.Path.GetExtension(filePaths[i]))
-                {
-                    case ".flac":
-                    case ".FLAC":
-                        flacCount++;
-                        files[i] = new FlacFile(filePaths[i]);
-                        break;
-                    case ".jpeg":
-                    case ".JPEG":
-                    case ".jpg":
-                    case ".JPG":
-                    case ".png":
-                    case ".PNG":
-                        files[i] = new CoverArt(filePaths[i]);
-                        break;
-                    default:
-                        files[i] = new MediaFile(filePaths[i]);
-                        break;
-                }
-                System.Console.WriteLine(filePaths[i]);
+                album = new Album(dirpath);
 
+                this.files = album.GetAlbumFiles();
             }
-
-            return files;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
+        
 
         #endregion
 
@@ -142,20 +89,22 @@ namespace FlacToSpot
             //Setup delivery folder
             string deliveryName = GetDeliveryFolderName();
             string deliveryPath = Path.Combine(DestinationDirectory, deliveryName);
-
-            //Setup album folder
-            string albumName = album.GetAlbumName();
-            if (albumName == null)
+            
+            try
             {
-                throw new Exception("Couldn't find album name");
+                //Setup album folder
+                string albumName = album.GetAlbumName();
+                string newAlbumPath = Path.Combine(deliveryPath, albumName);
+                //rename all files
+                RenameFiles();
+                //Move files
+                MoveFiles(newAlbumPath, deliveryPath);
             }
-            string newAlbumPath = Path.Combine(deliveryPath, albumName);
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
 
-
-            //rename all files
-            RenameFiles();
-            //Move files
-            MoveFiles(newAlbumPath, deliveryPath);
         }
 
         /*
@@ -190,11 +139,11 @@ namespace FlacToSpot
             {
                 if (file is FlacFile)
                 {
-                    file.FileName = "1_" + flacCount;
+                    file.FileName = "1_" + flacCount++;
                 }
-                else
+                else if(file is CoverArt)
                 {
-
+                    file.FileName = "coverart";
                 }
             }
         }
@@ -211,19 +160,15 @@ namespace FlacToSpot
             {
                 try
                 {
-                    File.Copy(files[i].Path, destination);
+                    File.Move(files[i].Path, destination);
                 }
-
-                if (CopyFile(files[i].FileName))
+                catch (Exception ex)
                 {
-                    pbar.PerformStep();
+                    throw new Exception(ex.Message);
                 }
+
+                pbar.PerformStep();
             }
-        }
-
-        private bool CopyFile(string fileName)
-        {
-
         }
         #endregion 
     }

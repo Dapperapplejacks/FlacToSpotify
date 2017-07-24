@@ -123,7 +123,6 @@
             this.button3.TabIndex = 4;
             this.button3.Text = "Process Files";
             this.button3.UseVisualStyleBackColor = false;
-            this.button3.Visible = false;
             this.button3.Click += new System.EventHandler(this.ProcessFilesClick);
             // 
             // button4

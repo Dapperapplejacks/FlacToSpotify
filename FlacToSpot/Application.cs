@@ -39,7 +39,7 @@ namespace FlacToSpot
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: {0}", ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
             
 
@@ -150,7 +150,7 @@ namespace FlacToSpot
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: {0}", ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
             
             

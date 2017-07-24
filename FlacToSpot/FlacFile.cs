@@ -24,9 +24,10 @@ namespace FlacToSpot
         public FlacFile(string path)
             : base(path)
         {
+            tag = null;
             var file = TagLib.File.Create(path);
 
-            tag = file.Tag;
+            Tag = file.Tag;
         }
 
     }
