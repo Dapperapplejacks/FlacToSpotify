@@ -1,4 +1,5 @@
-﻿namespace FlacToSpot
+﻿using System.Drawing;
+namespace FlacToSpot
 {
     partial class Application
     {
@@ -45,6 +46,7 @@
             this.SelectAlbumButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectAlbumButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.SelectAlbumButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SelectAlbumButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SelectAlbumButton.Location = new System.Drawing.Point(0, 0);
             this.SelectAlbumButton.Name = "SelectAlbumButton";
@@ -105,6 +107,7 @@
             this.SelectUPCButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectUPCButton.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.SelectUPCButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SelectUPCButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SelectUPCButton.Location = new System.Drawing.Point(0, 250);
             this.SelectUPCButton.Name = "SelectUPCButton";
@@ -118,29 +121,34 @@
             // 
             this.ProcessFilesButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ProcessFilesButton.BackColor = System.Drawing.Color.Green;
-            this.ProcessFilesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.DarkOliveGreen;
-            this.ProcessFilesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.ProcessFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ProcessFilesButton.Location = new System.Drawing.Point(0, 351);
+            this.ProcessFilesButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.ProcessFilesButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ProcessFilesButton.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.ProcessFilesButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.ProcessFilesButton.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ProcessFilesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ProcessFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProcessFilesButton.ForeColor = System.Drawing.Color.Green;
+            this.ProcessFilesButton.Location = new System.Drawing.Point(0, 350);
             this.ProcessFilesButton.Name = "ProcessFilesButton";
             this.ProcessFilesButton.Size = new System.Drawing.Size(484, 70);
             this.ProcessFilesButton.TabIndex = 4;
             this.ProcessFilesButton.Text = "Process Files";
-            this.ProcessFilesButton.UseVisualStyleBackColor = false;
+            this.ProcessFilesButton.UseVisualStyleBackColor = true;
             this.ProcessFilesButton.Click += new System.EventHandler(this.ProcessFilesClick);
             // 
             // SelectDeliveryButton
             // 
             this.SelectDeliveryButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.SelectDeliveryButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SelectDeliveryButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SelectDeliveryButton.Location = new System.Drawing.Point(0, 297);
             this.SelectDeliveryButton.Name = "SelectDeliveryButton";
             this.SelectDeliveryButton.Size = new System.Drawing.Size(484, 48);
             this.SelectDeliveryButton.TabIndex = 5;
             this.SelectDeliveryButton.Text = "Select Delivery Folder Destination";
-            this.SelectDeliveryButton.UseVisualStyleBackColor = true;
+            this.SelectDeliveryButton.UseVisualStyleBackColor = false;
             this.SelectDeliveryButton.Click += new System.EventHandler(this.DestinationFolderClick);
             // 
             // DoneLabel

@@ -29,35 +29,54 @@ namespace FlacToSpot
 
         private void SelectAlbumDirClick(object sender, EventArgs e)
         {
+
+            string dirString = "";
+
             try
             {
-                if (dirHandler == null)
+                dirString = GetDirectoryString();
+
+                try
                 {
-                    dirHandler = new DirectoryHandler(GetDirectoryString());
+                    if (dirHandler == null)
+                    {
+                        dirHandler = new DirectoryHandler(dirString);
+                    }
+                    else
+                    {
+                        dirHandler.NewAlbum(dirString);
+                    }
+
+                    this.SelectAlbumButton.Text = "Album Directory: " + dirHandler.Album.Path;
+
+                    UpdateFileTable();
                 }
-                else
+                catch (Exception ex)
                 {
-                    dirHandler.NewAlbum(GetDirectoryString());
+                    MessageBox.Show("Error: " + ex.Message);
                 }
 
-                this.SelectAlbumButton.Text = "Album Directory: " + dirHandler.Album.Path;
-
-                UpdateFileTable();
+                DoneLabel.Visible = false;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error: " + ex.Message);
-            }
+                //dont do anything, they probably pressed cancel
 
-            DoneLabel.Visible = false;
-            
+            }
         }
 
         private void DestinationFolderClick(object sender, EventArgs e)
         {
-            dirHandler.DestinationDirectory = GetDirectoryString();
-
-            this.SelectDeliveryButton.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
+            try
+            {
+                dirHandler.DestinationDirectory = GetDirectoryString();
+                this.SelectDeliveryButton.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
+            }
+            catch (Exception ex)
+            {
+                //Dont do anything
+            }
+            
         }
 
         private string GetDirectoryString()
@@ -72,7 +91,7 @@ namespace FlacToSpot
             else
             {
                 //TODO: Alarm
-                return "No Directory Selected yet";
+                throw new Exception();
             }
         }
 
