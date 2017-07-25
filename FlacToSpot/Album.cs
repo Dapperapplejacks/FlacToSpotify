@@ -111,13 +111,22 @@ namespace FlacToSpot
         public MediaFile[] GetAlbumFiles()
         {
             string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-            MediaFile[] ret = new MediaFile[files.Length];
+            List<MediaFile> fileList = new List<MediaFile>();
+            //MediaFile[] ret = new MediaFile[files.Length];
             for (int i = 0; i < files.Length; i++)
             {
-                ret[i] = new MediaFile(files[i]);
+                string ext = System.IO.Path.GetExtension(files[i]);
+
+                if (ext.Equals(".jpg") || ext.Equals(".jpeg") || ext.Equals(".flac"))
+                {
+                    fileList.Add(new MediaFile(files[i]));
+                }
+                
+
+                //ret[i] = new MediaFile(files[i]);
             }
 
-            return ret;
+            return fileList.ToArray<MediaFile>();
         }
 
     }

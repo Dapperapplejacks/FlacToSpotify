@@ -89,16 +89,21 @@ namespace FlacToSpot
             //Setup delivery folder
             string deliveryName = GetDeliveryFolderName();
             string deliveryPath = Path.Combine(DestinationDirectory, deliveryName);
+            Directory.CreateDirectory(deliveryPath);
             
             try
             {
                 //Setup album folder
                 string albumName = album.GetAlbumName();
+                albumName = albumName.Replace(":", "- ");
+
                 string newAlbumPath = Path.Combine(deliveryPath, albumName);
+                Directory.CreateDirectory(newAlbumPath);
+
                 //rename all files
                 RenameFiles();
                 //Move files
-                MoveFiles(newAlbumPath, deliveryPath);
+                MoveFiles(newAlbumPath);
             }
             catch (Exception ex)
             {
@@ -137,18 +142,18 @@ namespace FlacToSpot
             int flacCount = 1;
             foreach (MediaFile file in files)
             {
-                if (file is FlacFile)
+                if (file.Extension.Equals(".flac"))
                 {
-                    file.FileName = "1_" + flacCount++;
+                    file.FileName = "1_" + flacCount++ + ".flac";
                 }
-                else if(file is CoverArt)
+                else if (file.Extension.Equals(".jpg") || file.Extension.Equals(".jpeg"))
                 {
-                    file.FileName = "coverart";
+                    file.FileName = "coverart" + file.Extension;
                 }
             }
         }
 
-        private void MoveFiles(string source, string destination)
+        private void MoveFiles(string destination)
         {
             pbar.Visible = true;
             pbar.Minimum = 1;
@@ -156,11 +161,14 @@ namespace FlacToSpot
             pbar.Value = 1;
             pbar.Step = 1;
 
-            for (int i = 1; i < files.Length; i++)
+            for (int i = 0; i < files.Length; i++)
             {
                 try
                 {
-                    File.Move(files[i].Path, destination);
+                    //string filePath = Path.Combine(files[i].Path, files[i].FileName);
+                    string destPath = Path.Combine(destination, files[i].FileName);
+
+                    File.Move(files[i].Path, destPath);
                 }
                 catch (Exception ex)
                 {
@@ -170,6 +178,7 @@ namespace FlacToSpot
                 pbar.PerformStep();
             }
         }
+
         #endregion 
     }
 }

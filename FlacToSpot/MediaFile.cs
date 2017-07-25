@@ -24,9 +24,10 @@ namespace FlacToSpot
             }
             set
             {
-                File.Move(fileName, value);
+                string newName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), value);
+                File.Move(path, newName);
                 this.fileName = value;
-                
+                path = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), this.fileName);
             }
         }
 

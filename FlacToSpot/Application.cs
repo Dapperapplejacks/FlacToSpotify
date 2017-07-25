@@ -146,14 +146,14 @@ namespace FlacToSpot
             try
             {
                 dirHandler.ProcessAlbum(progressBar1);
-                excelHandler.CreateMetaData(dirHandler.DestinationDirectory);
+                //excelHandler.CreateMetaData(dirHandler.DestinationDirectory);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
             
-            
+            //Reset all button labels, table, and progress bar
 
         }
 
