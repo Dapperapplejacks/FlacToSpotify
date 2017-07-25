@@ -62,6 +62,11 @@ namespace FlacToSpot
 
         public DirectoryHandler(string dirpath)
         {
+            NewAlbum(dirpath);
+        }
+
+        public void NewAlbum(string dirpath)
+        {
             albumDirPath = dirpath;
 
             try
@@ -76,7 +81,11 @@ namespace FlacToSpot
             }
         }
 
-        
+        public void ResetAlbum()
+        {
+            albumDirPath = "";
+            album = null;
+        }
 
         #endregion
 
@@ -99,6 +108,7 @@ namespace FlacToSpot
 
                 string newAlbumPath = Path.Combine(deliveryPath, albumName);
                 Directory.CreateDirectory(newAlbumPath);
+                album.Path = newAlbumPath;
 
                 //rename all files
                 RenameFiles();

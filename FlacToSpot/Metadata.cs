@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace FlacToSpot
 {
@@ -14,14 +15,13 @@ namespace FlacToSpot
 
         private List<string> headers2;
 
-        const string fileName = "metadata";
+        const string fileName = "metadata.xlsx";
         const string sheetName = "meta";
 
 
-        public Metadata()
+        public Metadata(Workbook wb) : base(wb)
         {
-            wb = new Workbook();
-            ws = new Worksheet();
+            this.wb = wb;
             ws.Name = sheetName;
 
             headers1 = new List<string>()
@@ -39,9 +39,18 @@ namespace FlacToSpot
             };
         }
 
-        public void SaveFile()
+        public void PopulateSheet(Album album, Manifest manifest)
         {
+            //setup headers
+            //
+        }
 
+        public void SaveFile(string path)
+        {
+            string namePath = Path.Combine(path, fileName);
+            wb.SaveAs(namePath);
+
+            CleanUp();
         }
 
     }

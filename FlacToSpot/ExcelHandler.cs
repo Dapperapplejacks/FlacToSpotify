@@ -13,11 +13,14 @@ namespace FlacToSpot
     class ExcelHandler
     {
         private Microsoft.Office.Interop.Excel.Application xlApp;
-        
+        private Workbooks workbooks;
+        public string manifestPath;
+        public Manifest manifest;
 
         public ExcelHandler()
         {
             xlApp = new Microsoft.Office.Interop.Excel.Application();
+            workbooks = xlApp.Workbooks;
 
             if (xlApp == null)
             {
@@ -26,17 +29,40 @@ namespace FlacToSpot
             }
         }
 
-        public Manifest ReadManifest(string path)
+        private Manifest ReadManifest(string path)
         {
-            Workbook workbook = xlApp.Workbooks.Open(path, Type.Missing, true);
-            return new Manifest(workbook);
-            
+            Workbook workbook = workbooks.Open(path, Type.Missing, true);
+            manifest = new Manifest(workbook);
+
+            Marshal.ReleaseComObject(workbook);
+            workbook = null;
+
+            return manifest;
         }
 
-        public void CreateMetaData(string path)
+        public void CreateMetaData(Album album)
         {
+            Metadata metadata = new Metadata(workbooks.Add());
+            metadata.PopulateSheet(album, ReadManifest(manifestPath));
+            metadata.SaveFile(album.Path);
 
+            manifest.CleanUp();
+            manifest = null;
         }
 
+        public void CleanUp()
+        {
+            xlApp.Quit();
+
+            if (manifest != null)
+            {
+                manifest.CleanUp();
+                manifest = null;
+            }
+            Marshal.ReleaseComObject(workbooks);
+            workbooks = null;
+            Marshal.ReleaseComObject(xlApp);
+            xlApp = null;
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace FlacToSpot
     class ExcelFile
     {
         protected Workbook wb;
+        protected Sheets worksheets;
         //Only working with 1 worksheet
         protected Worksheet ws;
         
@@ -26,8 +27,19 @@ namespace FlacToSpot
         public ExcelFile(Workbook wb)
         {
             this.wb = wb;
-            ws = (Worksheet)wb.Worksheets.get_Item(1);
+            worksheets = wb.Worksheets;
+            ws = (Worksheet)worksheets.get_Item(1);
+        }
 
+        public void CleanUp()
+        {
+            Marshal.ReleaseComObject(ws);
+            ws = null;
+            Marshal.ReleaseComObject(worksheets);
+            worksheets = null;
+            Marshal.ReleaseComObject(wb);
+            wb = null;
+            
         }
 
     }

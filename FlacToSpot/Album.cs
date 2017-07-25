@@ -45,7 +45,7 @@ namespace FlacToSpot
             {
                 return path;
             }
-            private set
+            set
             {
                 path = value;
             }

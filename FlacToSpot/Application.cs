@@ -16,7 +16,6 @@ namespace FlacToSpot
 
         private DirectoryHandler dirHandler;
         private ExcelHandler excelHandler;
-        private Manifest UPC_UES;
 
 
         public Application()
@@ -32,7 +31,15 @@ namespace FlacToSpot
         {
             try
             {
-                dirHandler = new DirectoryHandler(GetDirectoryString());
+                if (dirHandler == null)
+                {
+                    dirHandler = new DirectoryHandler(GetDirectoryString());
+                }
+                else
+                {
+                    dirHandler.NewAlbum(GetDirectoryString());
+                }
+
                 this.button1.Text = "Album Directory: " + dirHandler.Album.Path;
 
                 UpdateFileTable();
@@ -41,8 +48,8 @@ namespace FlacToSpot
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            
 
+            DoneLabel.Visible = false;
             
         }
 
@@ -124,7 +131,7 @@ namespace FlacToSpot
                     {
                         using (stream)
                         {
-                            UPC_UES = excelHandler.ReadManifest(ofd.FileName);
+                            excelHandler.manifestPath = (ofd.FileName);
                             button2.Text = Path.GetFileName(ofd.FileName);
                         }
                     }
@@ -146,19 +153,39 @@ namespace FlacToSpot
             try
             {
                 dirHandler.ProcessAlbum(progressBar1);
-                //excelHandler.CreateMetaData(dirHandler.DestinationDirectory);
+                excelHandler.CreateMetaData(dirHandler.Album);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
-            
-            //Reset all button labels, table, and progress bar
 
+            DoneLabel.Visible = true;
+            DoneLabel.Text = "Finished processing: " + dirHandler.Album.GetAlbumName();
+            
+            ResetDisplay();
         }
 
-        
+        //Just reset Album select button/album instance, table rows
+        //and make progress bar go away
+        private void ResetDisplay()
+        {
+            dirHandler.ResetAlbum();
+            this.button1.Text = "Select Album Directory";
+            tableLayoutPanel1.Controls.Clear();
+            tableLayoutPanel1.RowStyles.Clear();
+            progressBar1.Visible = false;
+        }
 
+        private void FormClosingHandler(object sender, FormClosingEventArgs e)
+        {
+            excelHandler.CleanUp();
+        }
+
+        private void Application_Load(object sender, EventArgs e)
+        {
+            this.FormClosing += new FormClosingEventHandler(FormClosingHandler);
+        }
 
 
     }
