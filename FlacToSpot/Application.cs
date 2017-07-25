@@ -40,7 +40,7 @@ namespace FlacToSpot
                     dirHandler.NewAlbum(GetDirectoryString());
                 }
 
-                this.button1.Text = "Album Directory: " + dirHandler.Album.Path;
+                this.SelectAlbumButton.Text = "Album Directory: " + dirHandler.Album.Path;
 
                 UpdateFileTable();
             }
@@ -57,7 +57,7 @@ namespace FlacToSpot
         {
             dirHandler.DestinationDirectory = GetDirectoryString();
 
-            this.button4.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
+            this.SelectDeliveryButton.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
         }
 
         private string GetDirectoryString()
@@ -81,15 +81,15 @@ namespace FlacToSpot
         private void UpdateFileTable()
         {
 
-            tableLayoutPanel1.Controls.Clear();
-            tableLayoutPanel1.RowStyles.Clear();
-            tableLayoutPanel1.Controls.Add(this.label3, 1, 0);
-            tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            FileTable.Controls.Clear();
+            FileTable.RowStyles.Clear();
+            FileTable.Controls.Add(this.ExtensionLabel, 1, 0);
+            FileTable.Controls.Add(this.FileLabel, 0, 0);
+            FileTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 
-            tableLayoutPanel1.RowCount = dirHandler.Files.Count() + 1;
+            FileTable.RowCount = dirHandler.Files.Count() + 1;
 
-            for (int i = 1; i < tableLayoutPanel1.RowCount; i++)
+            for (int i = 1; i < FileTable.RowCount; i++)
             {
 
                 //RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 
@@ -97,7 +97,7 @@ namespace FlacToSpot
 
                 RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25f);
 
-                tableLayoutPanel1.RowStyles.Add(rowStyle);
+                FileTable.RowStyles.Add(rowStyle);
 
                 string fileName = dirHandler.Files[i-1].FileName;
                 string extension = dirHandler.Files[i-1].Extension;
@@ -114,7 +114,7 @@ namespace FlacToSpot
             newLabel.Text = text;
             newLabel.AutoSize = true;
             newLabel.Font = new Font("Microsoft Sans Serif", 12);
-            tableLayoutPanel1.Controls.Add(newLabel, col, row);
+            FileTable.Controls.Add(newLabel, col, row);
         }
 
         private void SelectUPCUESFileClick(object sender, EventArgs e)
@@ -132,7 +132,7 @@ namespace FlacToSpot
                         using (stream)
                         {
                             excelHandler.manifestPath = (ofd.FileName);
-                            button2.Text = Path.GetFileName(ofd.FileName);
+                            SelectUPCButton.Text = Path.GetFileName(ofd.FileName);
                         }
                     }
                 }
@@ -152,18 +152,29 @@ namespace FlacToSpot
             */
             try
             {
-                dirHandler.ProcessAlbum(progressBar1);
+
+                if (dirHandler == null)
+                {
+                    throw new Exception("Album Directory Not Selected");
+                }
+                if (excelHandler.manifestPath == null || excelHandler.manifestPath == "")
+                {
+                    throw new Exception("UPC Manifest Not Selected");
+                }
+                dirHandler.ProcessAlbum();
                 excelHandler.CreateMetaData(dirHandler.Album);
+
+                DoneLabel.Visible = true;
+                DoneLabel.Text = "Finished processing: " + dirHandler.Album.GetAlbumName();
+
+                ResetDisplay();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error: " + ex.Message);
             }
 
-            DoneLabel.Visible = true;
-            DoneLabel.Text = "Finished processing: " + dirHandler.Album.GetAlbumName();
             
-            ResetDisplay();
         }
 
         //Just reset Album select button/album instance, table rows
@@ -171,10 +182,9 @@ namespace FlacToSpot
         private void ResetDisplay()
         {
             dirHandler.ResetAlbum();
-            this.button1.Text = "Select Album Directory";
-            tableLayoutPanel1.Controls.Clear();
-            tableLayoutPanel1.RowStyles.Clear();
-            progressBar1.Visible = false;
+            this.SelectAlbumButton.Text = "Select Album Directory";
+            FileTable.Controls.Clear();
+            FileTable.RowStyles.Clear();
         }
 
         private void FormClosingHandler(object sender, FormClosingEventArgs e)

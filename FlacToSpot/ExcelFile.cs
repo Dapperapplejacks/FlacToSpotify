@@ -33,13 +33,23 @@ namespace FlacToSpot
 
         public void CleanUp()
         {
-            Marshal.ReleaseComObject(ws);
-            ws = null;
-            Marshal.ReleaseComObject(worksheets);
-            worksheets = null;
-            Marshal.ReleaseComObject(wb);
-            wb = null;
-            
+            if (ws != null)
+            {
+                Marshal.ReleaseComObject(ws);
+                ws = null;
+            }
+
+            if (worksheets != null)
+            {
+                Marshal.ReleaseComObject(worksheets);
+                worksheets = null;
+            }
+
+            if (wb != null)
+            {
+                Marshal.ReleaseComObject(wb);
+                wb = null;
+            }
         }
 
     }

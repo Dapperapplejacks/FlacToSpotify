@@ -18,7 +18,7 @@ namespace FlacToSpot
         private string albumDirPath;
         private string destDirPath;
         private MediaFile[] files;
-        private ProgressBar pbar;
+        
 
         public Album Album
         {
@@ -91,9 +91,14 @@ namespace FlacToSpot
 
         #region Process Album
 
-        public void ProcessAlbum(ProgressBar pbar)
+        public void ProcessAlbum()
         {
-            this.pbar = pbar;
+            if (DestinationDirectory == "" || DestinationDirectory == null)
+            {
+                throw new Exception("No Destination Directory Selected");
+            }
+
+            
 
             //Setup delivery folder
             string deliveryName = GetDeliveryFolderName();
@@ -165,12 +170,6 @@ namespace FlacToSpot
 
         private void MoveFiles(string destination)
         {
-            pbar.Visible = true;
-            pbar.Minimum = 1;
-            pbar.Maximum = files.Length;
-            pbar.Value = 1;
-            pbar.Step = 1;
-
             for (int i = 0; i < files.Length; i++)
             {
                 try
@@ -184,8 +183,6 @@ namespace FlacToSpot
                 {
                     throw new Exception(ex.Message);
                 }
-
-                pbar.PerformStep();
             }
         }
 

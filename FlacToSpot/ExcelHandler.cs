@@ -31,13 +31,20 @@ namespace FlacToSpot
 
         private Manifest ReadManifest(string path)
         {
-            Workbook workbook = workbooks.Open(path, Type.Missing, true);
-            manifest = new Manifest(workbook);
+            try
+            {
+                Workbook workbook = workbooks.Open(path, Type.Missing, true);
+                manifest = new Manifest(workbook);
 
-            Marshal.ReleaseComObject(workbook);
-            workbook = null;
+                Marshal.ReleaseComObject(workbook);
+                workbook = null;
 
-            return manifest;
+                return manifest;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error locating/reading UPC manifest");
+            }
         }
 
         public void CreateMetaData(Album album)
@@ -46,8 +53,10 @@ namespace FlacToSpot
             metadata.PopulateSheet(album, ReadManifest(manifestPath));
             metadata.SaveFile(album.Path);
 
-            manifest.CleanUp();
-            manifest = null;
+            CleanUp();
+
+            xlApp = new Microsoft.Office.Interop.Excel.Application();
+            workbooks = xlApp.Workbooks; 
         }
 
         public void CleanUp()
