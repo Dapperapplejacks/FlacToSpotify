@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
 
 namespace FlacToSpot
 {
@@ -13,7 +15,10 @@ namespace FlacToSpot
         private CD[] _CDs;
         private CoverArt coverArt;
         private string path;
+        private string UPC;
+        private string startISRC;
 
+        private const string label = "Orange Mountain Music";
 
         public CD[] CDs
         {
@@ -84,6 +89,11 @@ namespace FlacToSpot
             }
         }
 
+        public string GetAlbumTitle()
+        {
+            return _CDs[0].FlacFiles[0].Tag.Album;
+        }
+
         private CoverArt ExtractCoverArt(string path)
         {
             string[] coverArtPath = Directory.EnumerateFiles(path, "*.jpg").ToArray();
@@ -94,18 +104,6 @@ namespace FlacToSpot
             }
             return new CoverArt(coverArtPath[0]);
 
-        }
-
-        public string GetAlbumName()
-        {
-            try
-            {
-                return _CDs[0].FlacFiles[0].Tag.Album;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
         public MediaFile[] GetAlbumFiles()
@@ -121,7 +119,7 @@ namespace FlacToSpot
                 {
                     fileList.Add(new MediaFile(files[i]));
                 }
-                
+
 
                 //ret[i] = new MediaFile(files[i]);
             }
@@ -129,5 +127,56 @@ namespace FlacToSpot
             return fileList.ToArray<MediaFile>();
         }
 
+        public string GetAlbumName()
+        {
+            try
+            {
+                return _CDs[0].FlacFiles[0].Tag.Album;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public string GetUPC(Manifest manifest)
+        {
+
+            if (this.UPC != null)
+            {
+                return this.UPC;
+            }
+
+            Range titleCol = null;
+            Range upcCol = null;
+            bool found = false;
+
+            try
+            {
+                titleCol = manifest.GetColumn(2);
+                upcCol = manifest.GetColumn(3);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Unable to obtain Album Title/UPC column(s) of UPC manifest");
+            }
+
+
+            return this.UPC;
+        }
+
+        public string GetStartISRC(Manifest manifest)
+        {
+            if (this.startISRC != null)
+            {
+                return this.startISRC;
+            }
+            return null;
+        }
+
+        public string GetLabel()
+        {
+            return this.label;
+        }
     }
 }

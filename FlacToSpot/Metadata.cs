@@ -46,6 +46,13 @@ namespace FlacToSpot
         public void PopulateSheet(Album album, Manifest manifest)
         {
             SetHeaders();
+            //Start at third row, past headers
+            int row = 3;
+            int column = 1;
+
+            string upc = album.GetUPC(manifest);
+            string label = 
+
             
         }
 
@@ -86,12 +93,8 @@ namespace FlacToSpot
                     throw new Exception("COMException, code: " + ex.ErrorCode);
                 }
             }
-
-            
-
-
-
         }
+
 
         public void SaveFile(string path)
         {

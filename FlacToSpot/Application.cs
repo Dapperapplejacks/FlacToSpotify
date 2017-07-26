@@ -60,7 +60,7 @@ namespace FlacToSpot
             }
             catch (Exception ex)
             {
-                //dont do anything, they probably pressed cancel
+                //dont do anything, pressed cancel
 
             }
         }
@@ -74,7 +74,7 @@ namespace FlacToSpot
             }
             catch (Exception ex)
             {
-                //Dont do anything
+                //Dont do anything, cancel pressed
             }
             
         }
@@ -90,7 +90,7 @@ namespace FlacToSpot
             }
             else
             {
-                //TODO: Alarm
+                //Pressed cancel
                 throw new Exception();
             }
         }

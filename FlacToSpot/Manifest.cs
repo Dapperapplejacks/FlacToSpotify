@@ -41,5 +41,9 @@ namespace FlacToSpot
 
         }
 
+        public Range GetColumn(int col)
+        {
+            return ws.Range[col, ws.Rows.Count];
+        }
     }
 }
