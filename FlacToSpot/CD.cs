@@ -8,9 +8,11 @@ using System.IO;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Represents CD which keeps track of flac files on that CD
+    /// </summary>
     class CD
     {
-        
         private FlacFile[] flacFiles;
         private string path;
 
@@ -38,6 +40,10 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Creates instance of CD, finds flac files in the CD's directory
+        /// </summary>
+        /// <param name="path">Path of this CD directory</param>
         public CD(string path)
         {
             this.path = path;

@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Represents an album which contains a list of CDs, and other information about the album
+    /// </summary>
     class Album
     {
         #region Properties
+        
         private CD[] _CDs;
         private CoverArt coverArt;
         private string path;
-        private string UPC;
-        private string startISRC;
+        private Int64 UPC;
+        private string[] ISRCs;
 
-        private const string label = "Orange Mountain Music";
 
         public CD[] CDs
         {
@@ -31,7 +35,7 @@ namespace FlacToSpot
                 _CDs = value;
             }
         }
-
+        
         public CoverArt CoverArt
         {
             get
@@ -57,7 +61,13 @@ namespace FlacToSpot
         }
 
         #endregion
-
+        /// <summary>
+        /// Creates instance of Album object.
+        /// Will also call constructors for CD object for each CD in album.
+        /// This is done by enumerating the directories under the current album directory,
+        /// and iterating through them.
+        /// </summary>
+        /// <param name="path">Path of album</param>
         public Album(string path)
         {
             this.path = path;
@@ -81,50 +91,91 @@ namespace FlacToSpot
                     }
                 }
 
-                coverArt = ExtractCoverArt(path);
+                coverArt = ExtractCoverArt();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
-
+        
+        /// <summary>
+        /// Helper for getting album title
+        /// </summary>
+        /// <returns>Title of album</returns>
         public string GetAlbumTitle()
         {
             return _CDs[0].FlacFiles[0].Tag.Album;
         }
 
-        private CoverArt ExtractCoverArt(string path)
+        /// <summary>
+        /// Finds the cover art in the album directory. Will search through all .jpg and .jpeg files in directory.
+        /// </summary>
+        /// <returns>Instance of Coverart object representing the coverart for this album</returns>
+        private CoverArt ExtractCoverArt()
         {
-            string[] coverArtPath = Directory.EnumerateFiles(path, "*.jpg").ToArray();
+            string[] coverArtPath1 = Directory.EnumerateFiles(path, "*.jpg").ToArray();
+            string[] coverArtPath2 = Directory.EnumerateFiles(path, "*.jpeg").ToArray();
 
-            if (coverArtPath.Length < 1)
+            if (coverArtPath1.Length == 0 && coverArtPath2.Length == 0)
             {
-                throw new Exception("No cover art found");
+                throw new Exception("No cover art found with .jpg or .jpeg extensions");
             }
-            return new CoverArt(coverArtPath[0]);
+            else if (coverArtPath1.Length + coverArtPath2.Length > 1)
+            {
+                throw new Exception("Too many image files found");
+            }
+            else if (coverArtPath1.Length == 1)
+            {
+                return new CoverArt(coverArtPath1[0]);
+            }
+            else
+            {
+                return new CoverArt(coverArtPath2[0]);
+            }
 
         }
 
+        /// <summary>
+        /// Retrieves all album media files which include flac and coverart files
+        /// </summary>
+        /// <returns>List of Flac and Coverart objects</returns>
         public MediaFile[] GetAlbumFiles()
         {
-            string[] files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
             List<MediaFile> fileList = new List<MediaFile>();
-            //MediaFile[] ret = new MediaFile[files.Length];
-            for (int i = 0; i < files.Length; i++)
+
+            fileList.Add(coverArt);
+            foreach (CD cd in CDs)
             {
-                string ext = System.IO.Path.GetExtension(files[i]);
-
-                if (ext.Equals(".jpg") || ext.Equals(".jpeg") || ext.Equals(".flac"))
+                foreach (MediaFile file in cd.FlacFiles)
                 {
-                    fileList.Add(new MediaFile(files[i]));
+                    if (file.Extension.Equals(".flac"))
+                    {
+                        fileList.Add(file);
+                    }
                 }
-
-
-                //ret[i] = new MediaFile(files[i]);
             }
 
             return fileList.ToArray<MediaFile>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns>List of all flac files in album</returns>
+        public FlacFile[] GetFlacs()
+        {
+            List<FlacFile> flacFiles = new List<FlacFile>();
+
+            foreach (CD cd in _CDs)
+            {
+                foreach (FlacFile flac in cd.FlacFiles)
+                {
+                    flacFiles.Add(flac);
+                }
+            }
+
+            return flacFiles.ToArray();
         }
 
         public string GetAlbumName()
@@ -139,44 +190,82 @@ namespace FlacToSpot
             }
         }
 
-        public string GetUPC(Manifest manifest)
+        /// <summary>
+        /// Retrieves UPC number for this album from the manifest
+        /// </summary>
+        /// <param name="manifest">UPC/ISRC manifest</param>
+        /// <returns>UPC number as an Int64</returns>
+        public Int64 GetUPC(Manifest manifest)
         {
 
-            if (this.UPC != null)
+            if (this.UPC != 0)
             {
                 return this.UPC;
             }
 
-            Range titleCol = null;
-            Range upcCol = null;
-            bool found = false;
+            this.UPC = manifest.GetUPC(GetAlbumTitle());
 
-            try
+            if (this.UPC == 0)
             {
-                titleCol = manifest.GetColumn(2);
-                upcCol = manifest.GetColumn(3);
+                MessageBox.Show("Unable to obtain UPC for Album: " + GetAlbumTitle());
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Unable to obtain Album Title/UPC column(s) of UPC manifest");
-            }
-
 
             return this.UPC;
         }
 
-        public string GetStartISRC(Manifest manifest)
+        /// <summary>
+        /// Retrieves ISRC numbers for all songs on this album using the starting ISRC from the manifest.
+        /// </summary>
+        /// <param name="manifest">UPC/ISRC manifest</param>
+        /// <returns>String array of ISRC numbers in order of song order</returns>
+        public string[] GetAllISRCs(Manifest manifest)
         {
-            if (this.startISRC != null)
+            if (this.ISRCs != null)
             {
-                return this.startISRC;
+                return this.ISRCs;
+            } 
+
+            string startISRC = manifest.GetISRC(GetAlbumName());
+            if (startISRC.Equals(""))
+            {
+                MessageBox.Show("Could not find ISRC for Album: " + GetAlbumName());
+                return null;
             }
-            return null;
+
+            string[] ISRCs = new string[GetTrackCount()];
+            string[] tokens = startISRC.Split('-');
+            int start = Convert.ToInt32(tokens[tokens.Length - 1]);
+
+            for (int i = 0; i < ISRCs.Length; i++)
+            {
+                string[] newTokens = (string[])tokens.Clone();
+                newTokens[newTokens.Length - 1] = (start + i).ToString();
+                ISRCs[i] = String.Join("-", newTokens);
+            }
+
+            this.ISRCs = ISRCs;
+            return ISRCs;
         }
 
-        public string GetLabel()
+        public string GetArtists()
         {
-            return this.label;
+            string[] artists = _CDs[0].FlacFiles[0].Tag.Performers;
+            return String.Join(", ", artists);
+        }
+
+        public string GetGenre()
+        {
+            return _CDs[0].FlacFiles[0].Tag.FirstGenre;
+        }
+
+        public string GetReleaseDate()
+        {
+            return _CDs[0].FlacFiles[0].Tag.Year.ToString();
+        }
+
+        public int GetTrackCount()
+        {
+            return (int)_CDs[0].FlacFiles[0].Tag.TrackCount;
         }
     }
 }

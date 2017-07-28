@@ -9,29 +9,12 @@ namespace FlacToSpot
 {
     class Metadata : ExcelFile
     {
-        private List<string> headers1;
-
-        private List<string> headers2;
-
-        const string fileName = "metadata.xlsx";
-        const string sheetName = "meta";
-        const int fontSize = 10;
-        const int columnWidth = 13;
-
-
-        public Metadata(Workbook wb) : base(wb)
-        {
-            this.wb = wb;
-            ws.Name = sheetName;
-            ws.Cells.Font.Size = fontSize;
-            ws.Cells.ColumnWidth = columnWidth;
-
-            headers1 = new List<string>()
+        private readonly List<string> headers1 = new List<string>()
             {
                 "Album Data", "Track Data"
             };
 
-            headers2 = new List<string>()
+        private readonly List<string> headers2 = new List<string>()
             {
                 "upc", "label", "title", "version", "artist", "genre", "original release date\nYYYY, YYYY-MM or YYYY-MM-DD",
                 "coverart file path", "pline", "cline", 
@@ -41,18 +24,104 @@ namespace FlacToSpot
                 "territories", "territories exclude", "featured artist", "composer", "lyricist", "arranger", "producer",
                 "remixer"
             };
+
+        const string fileName = "metadata.xlsx";
+        const string sheetName = "meta";
+        const int fontSize = 10;
+        const int columnWidth = 13;
+
+        const string version = "";
+        const string label = "Orange Mountain Music";
+        const string cline = "";
+        const string parentalWarning = "not-explicit";
+
+        public Metadata(Workbook wb) : base(wb)
+        {
+            this.wb = wb;
+            ws.Name = sheetName;
+            ws.Cells.Font.Size = fontSize;
+            ws.Cells.ColumnWidth = columnWidth;
         }
 
-        public void PopulateSheet(Album album, Manifest manifest)
+        public void PopulateSheet(Album album, Manifest manifest, string[] startEndDates)
         {
             SetHeaders();
-            //Start at third row, past headers
-            int row = 3;
-            int column = 1;
+            FlacFile[] flacs = album.GetFlacs();
 
-            string upc = album.GetUPC(manifest);
-            string label = 
+            //Album data
+            Int64 upc = album.GetUPC(manifest);
+            string albumTitle = album.GetAlbumName();
+            string artist = album.GetArtists();
+            string genre = album.GetGenre();
+            string releaseDate = album.GetReleaseDate();
+            string coverartFilePath = album.CoverArt.FileName;
+            string pline = DateTime.Now.Year + " " + label;
 
+            string[] ISRCs = album.GetAllISRCs(manifest);
+            
+            //Iterate through rows
+            for (int row = 3; row < album.GetFlacs().Length+3; row++)
+            {
+                int col = 1;
+
+                //Album Data
+                ws.Cells[row, col] = upc;
+                ((Range)ws.Cells[row, col++]).NumberFormat = "0";
+                ws.Cells[row, col++] = label;
+                ws.Cells[row, col++] = albumTitle;
+                ws.Cells[row, col++] = version;
+                ws.Cells[row, col++] = artist;
+                ws.Cells[row, col++] = genre;
+                ws.Cells[row, col++] = releaseDate;
+                ws.Cells[row, col++] = coverartFilePath;
+                ws.Cells[row, col++] = pline;
+                ws.Cells[row, col++] = cline;
+
+                //Track data
+                TagLib.Tag tag = flacs[row - 3].Tag;
+
+                //Disc no
+                ws.Cells[row, col++] = (int)tag.Disc;
+                //Track no
+                ws.Cells[row, col++] = (int)tag.Track;
+                //ISRC
+                ws.Cells[row, col++] = ISRCs[row - 3];
+                //Title
+                ws.Cells[row, col++] = tag.Title;
+                //Version
+                ws.Cells[row, col++] = version;
+                //Artist(s)
+                ws.Cells[row, col++] = String.Join(", ", tag.Performers);
+                //Parental Warning
+                ws.Cells[row, col++] = parentalWarning;
+                //Pline
+                ws.Cells[row, col++] = "";
+                //Audio File Path
+                ws.Cells[row, col++] = flacs[row - 3].FileName;
+                //Start date
+                ws.Cells[row, col] = startEndDates[0];
+                ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
+                //End Date
+                ws.Cells[row, col] = startEndDates[1];
+                ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
+                //Territories
+                ws.Cells[row, col++] = "";
+                //Territories exclude
+                ws.Cells[row, col++] = "";
+                //Featured Artist
+                ws.Cells[row, col++] = "";
+                //Composer(s)
+                ws.Cells[row, col++] = String.Join(", ", tag.Composers);
+                //Lyricist
+                ws.Cells[row, col++] = "";
+                //Arranger
+                ws.Cells[row, col++] = "";
+                //Producer
+                ws.Cells[row, col++] = "";
+                //Remixer
+                ws.Cells[row, col++] = "";
+                
+            }
             
         }
 

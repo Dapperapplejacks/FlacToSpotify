@@ -47,10 +47,10 @@ namespace FlacToSpot
             }
         }
 
-        public void CreateMetaData(Album album)
+        public void CreateMetaData(Album album, string[] startEndDates)
         {
             Metadata metadata = new Metadata(workbooks.Add());
-            metadata.PopulateSheet(album, ReadManifest(manifestPath));
+            metadata.PopulateSheet(album, ReadManifest(manifestPath), startEndDates);
             metadata.SaveFile(album.Path);
 
             CleanUp();

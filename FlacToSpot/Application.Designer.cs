@@ -38,6 +38,10 @@ namespace FlacToSpot
             this.ProcessFilesButton = new System.Windows.Forms.Button();
             this.SelectDeliveryButton = new System.Windows.Forms.Button();
             this.DoneLabel = new System.Windows.Forms.Label();
+            this.StartDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.EndDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.StartDateLabel = new System.Windows.Forms.Label();
+            this.EndDateCheck = new System.Windows.Forms.CheckBox();
             this.FileTable.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,7 +117,7 @@ namespace FlacToSpot
             this.SelectUPCButton.Name = "SelectUPCButton";
             this.SelectUPCButton.Size = new System.Drawing.Size(484, 40);
             this.SelectUPCButton.TabIndex = 3;
-            this.SelectUPCButton.Text = "Select UPC/USE File";
+            this.SelectUPCButton.Text = "Select UPC/ISPC File";
             this.SelectUPCButton.UseVisualStyleBackColor = false;
             this.SelectUPCButton.Click += new System.EventHandler(this.SelectUPCUESFileClick);
             // 
@@ -129,7 +133,7 @@ namespace FlacToSpot
             this.ProcessFilesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ProcessFilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ProcessFilesButton.ForeColor = System.Drawing.Color.Green;
-            this.ProcessFilesButton.Location = new System.Drawing.Point(0, 350);
+            this.ProcessFilesButton.Location = new System.Drawing.Point(0, 416);
             this.ProcessFilesButton.Name = "ProcessFilesButton";
             this.ProcessFilesButton.Size = new System.Drawing.Size(484, 70);
             this.ProcessFilesButton.TabIndex = 4;
@@ -156,7 +160,7 @@ namespace FlacToSpot
             this.DoneLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DoneLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DoneLabel.Location = new System.Drawing.Point(0, 424);
+            this.DoneLabel.Location = new System.Drawing.Point(0, 498);
             this.DoneLabel.Name = "DoneLabel";
             this.DoneLabel.Size = new System.Drawing.Size(483, 20);
             this.DoneLabel.TabIndex = 7;
@@ -164,21 +168,67 @@ namespace FlacToSpot
             this.DoneLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DoneLabel.Visible = false;
             // 
+            // StartDatePicker
+            // 
+            this.StartDatePicker.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.StartDatePicker.Checked = false;
+            this.StartDatePicker.Location = new System.Drawing.Point(8, 381);
+            this.StartDatePicker.Name = "StartDatePicker";
+            this.StartDatePicker.Size = new System.Drawing.Size(200, 20);
+            this.StartDatePicker.TabIndex = 2;
+            // 
+            // EndDatePicker
+            // 
+            this.EndDatePicker.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.EndDatePicker.Checked = false;
+            this.EndDatePicker.Enabled = false;
+            this.EndDatePicker.Location = new System.Drawing.Point(272, 381);
+            this.EndDatePicker.Name = "EndDatePicker";
+            this.EndDatePicker.Size = new System.Drawing.Size(200, 20);
+            this.EndDatePicker.TabIndex = 8;
+            this.EndDatePicker.Value = new System.DateTime(2017, 7, 27, 0, 0, 0, 0);
+            // 
+            // StartDateLabel
+            // 
+            this.StartDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.StartDateLabel.Location = new System.Drawing.Point(8, 348);
+            this.StartDateLabel.Name = "StartDateLabel";
+            this.StartDateLabel.Size = new System.Drawing.Size(197, 30);
+            this.StartDateLabel.TabIndex = 0;
+            this.StartDateLabel.Text = "Select Start Date";
+            this.StartDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // EndDateCheck
+            // 
+            this.EndDateCheck.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.EndDateCheck.Location = new System.Drawing.Point(317, 354);
+            this.EndDateCheck.Name = "EndDateCheck";
+            this.EndDateCheck.Size = new System.Drawing.Size(112, 24);
+            this.EndDateCheck.TabIndex = 10;
+            this.EndDateCheck.Text = "Select End Date";
+            this.EndDateCheck.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.EndDateCheck.UseVisualStyleBackColor = true;
+            this.EndDateCheck.CheckedChanged += new System.EventHandler(this.EndDateCheck_CheckedChanged);
+            // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(484, 461);
+            this.ClientSize = new System.Drawing.Size(484, 529);
+            this.Controls.Add(this.EndDateCheck);
+            this.Controls.Add(this.StartDateLabel);
+            this.Controls.Add(this.EndDatePicker);
             this.Controls.Add(this.DoneLabel);
             this.Controls.Add(this.SelectDeliveryButton);
+            this.Controls.Add(this.StartDatePicker);
             this.Controls.Add(this.ProcessFilesButton);
             this.Controls.Add(this.SelectUPCButton);
             this.Controls.Add(this.FileTable);
             this.Controls.Add(this.SelectAlbumButton);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.MinimumSize = new System.Drawing.Size(500, 500);
+            this.MinimumSize = new System.Drawing.Size(500, 568);
             this.Name = "Application";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
@@ -200,6 +250,10 @@ namespace FlacToSpot
         private System.Windows.Forms.Button ProcessFilesButton;
         private System.Windows.Forms.Button SelectDeliveryButton;
         private System.Windows.Forms.Label DoneLabel;
+        private System.Windows.Forms.DateTimePicker StartDatePicker;
+        private System.Windows.Forms.DateTimePicker EndDatePicker;
+        private System.Windows.Forms.Label StartDateLabel;
+        private System.Windows.Forms.CheckBox EndDateCheck;
     }
 }
 

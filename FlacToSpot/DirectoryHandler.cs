@@ -9,16 +9,27 @@ using System.Windows.Forms;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Class used for handling the album directory, destination directory, and coordinates the moving/renaming of files
+    /// </summary>
     class DirectoryHandler
     {
 
         #region Properties
-        
+        /// <summary>
+        /// Instance of album currently selected by user
+        /// </summary>
         private Album album;
+
+        /// <summary>
+        /// Path of Album directory
+        /// </summary>
         private string albumDirPath;
+
+        /// <summary>
+        /// Path of Destination directory
+        /// </summary>
         private string destDirPath;
-        private MediaFile[] files;
-        
 
         public Album Album
         {
@@ -44,18 +55,6 @@ namespace FlacToSpot
             }
         }
 
-        public MediaFile[] Files
-        {
-            get
-            {
-                return files;
-            }
-            private set
-            {
-                files = value;
-            }
-        }
-
         #endregion
 
         #region Constructor
@@ -65,6 +64,12 @@ namespace FlacToSpot
             NewAlbum(dirpath);
         }
 
+        #endregion
+
+        /// <summary>
+        /// Used for handling a new instance of an album
+        /// </summary>
+        /// <param name="dirpath">Path of album directory</param>
         public void NewAlbum(string dirpath)
         {
             albumDirPath = dirpath;
@@ -72,8 +77,6 @@ namespace FlacToSpot
             try
             {
                 album = new Album(dirpath);
-
-                this.files = album.GetAlbumFiles();
             }
             catch (Exception ex)
             {
@@ -81,16 +84,22 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// To clear reference of album, used when done with full processing of files
+        /// </summary>
         public void ResetAlbum()
         {
             albumDirPath = "";
             album = null;
         }
 
-        #endregion
-
         #region Process Album
 
+        /// <summary>
+        /// Main method used for processing the album.
+        /// This includes creating the delivery directory, the new album directory,
+        /// renaming the files, and moving those files to the new album directory
+        /// </summary>
         public void ProcessAlbum()
         {
             if (DestinationDirectory == "" || DestinationDirectory == null)
@@ -98,7 +107,9 @@ namespace FlacToSpot
                 throw new Exception("No Destination Directory Selected");
             }
 
-            
+            /*Create new directory as Delivery Folder (name being date YYYYMMDD_XX where XX is for multiple deliveries in a day)
+             * Child of Delivery folder is Album folder with directory name as Album name 
+            */
 
             //Setup delivery folder
             string deliveryName = GetDeliveryFolderName();
@@ -109,27 +120,28 @@ namespace FlacToSpot
             {
                 //Setup album folder
                 string albumName = album.GetAlbumName();
-                albumName = albumName.Replace(":", "- ");
+                albumName = CheckForValidChars(albumName);
+                
 
                 string newAlbumPath = Path.Combine(deliveryPath, albumName);
                 Directory.CreateDirectory(newAlbumPath);
                 album.Path = newAlbumPath;
 
-                //rename all files
                 RenameFiles();
-                //Move files
                 MoveFiles(newAlbumPath);
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
 
-        /*
-         * Grab the date, and figure out what delivery number to use (First is 01)
-         * */
+        /// <summary>
+        /// Helper for figuring out what to call the delivery folder
+        /// </summary>
+        /// <returns>Name of delivery folder.
+        /// Format: YYYYMMDD_XX where XX is what number delivery that day
+        /// </returns>
         private string GetDeliveryFolderName()
         {
             DateTime dateTime = DateTime.Now;
@@ -152,29 +164,73 @@ namespace FlacToSpot
             return name;
         }
 
+        /// <summary>
+        /// Helper for checking and altering the album name in order
+        /// for it to be a valid folder name.
+        /// Will warn user if name has been changed
+        /// </summary>
+        /// <param name="name">Name of album</param>
+        /// <returns>Name of valid album folder</returns>
+        private string CheckForValidChars(string name)
+        {
+            string startName = string.Copy(name);
+
+            name = name.Replace("\\", "-");
+            name = name.Replace("/", "-");
+            name = name.Replace(":", "-");
+            name = name.Replace("*", " ");
+            name = name.Replace("?", "");
+            name = name.Replace("\"", "\'");
+            name = name.Replace("<", "-");
+            name = name.Replace(">", "-");
+            name = name.Replace("|", "-");
+
+            if (!name.Equals(startName))
+            {
+                MessageBox.Show("Album directory name has been changed due to invalid character(s).\nNormal processing will continue.", "Warning");
+            }
+
+            return name;
+        }
+
+        /// <summary>
+        /// Helper for renaming files. Properties of files themselves will handle
+        /// changing the name in actual file system
+        /// </summary>
         private void RenameFiles()
         {
-            int flacCount = 1;
-            foreach (MediaFile file in files)
+
+            album.CoverArt.FileName = "coverart" + album.CoverArt.Extension;
+
+            int cdCount = 1;
+            foreach (CD cd in album.CDs)
             {
-                if (file.Extension.Equals(".flac"))
+                int flacCount = 1;
+                foreach (MediaFile file in cd.FlacFiles)
                 {
-                    file.FileName = "1_" + flacCount++ + ".flac";
+                    if (file.Extension.Equals(".flac"))
+                    {
+                        string newName = cdCount + "_" + flacCount++ + ".flac";
+                        file.FileName = newName;
+                    }
                 }
-                else if (file.Extension.Equals(".jpg") || file.Extension.Equals(".jpeg"))
-                {
-                    file.FileName = "coverart" + file.Extension;
-                }
+
+                cdCount++;
             }
         }
 
+        /// <summary>
+        /// Helper for moving files.
+        /// </summary>
+        /// <param name="destination">Where the files will be moved to. Should be the new Album directory</param>
         private void MoveFiles(string destination)
         {
+            MediaFile[] files = album.GetAlbumFiles();
+
             for (int i = 0; i < files.Length; i++)
             {
                 try
                 {
-                    //string filePath = Path.Combine(files[i].Path, files[i].FileName);
                     string destPath = Path.Combine(destination, files[i].FileName);
 
                     File.Move(files[i].Path, destPath);
