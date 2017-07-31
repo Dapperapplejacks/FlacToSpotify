@@ -102,10 +102,6 @@ namespace FlacToSpot
         /// </summary>
         public void ProcessAlbum()
         {
-            if (DestinationDirectory == "" || DestinationDirectory == null)
-            {
-                throw new Exception("No Destination Directory Selected");
-            }
 
             /*Create new directory as Delivery Folder (name being date YYYYMMDD_XX where XX is for multiple deliveries in a day)
              * Child of Delivery folder is Album folder with directory name as Album name 

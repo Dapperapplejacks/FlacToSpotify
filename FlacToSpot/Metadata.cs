@@ -7,13 +7,21 @@ using System.IO;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Abstraction of metadata file
+    /// </summary>
     class Metadata : ExcelFile
     {
+        /// <summary>
+        /// First row headers
+        /// </summary>
         private readonly List<string> headers1 = new List<string>()
             {
                 "Album Data", "Track Data"
             };
-
+        /// <summary>
+        /// Second row headers
+        /// </summary>
         private readonly List<string> headers2 = new List<string>()
             {
                 "upc", "label", "title", "version", "artist", "genre", "original release date\nYYYY, YYYY-MM or YYYY-MM-DD",
@@ -25,6 +33,8 @@ namespace FlacToSpot
                 "remixer"
             };
 
+        #region Constants
+
         const string fileName = "metadata.xlsx";
         const string sheetName = "meta";
         const int fontSize = 10;
@@ -35,6 +45,8 @@ namespace FlacToSpot
         const string cline = "";
         const string parentalWarning = "not-explicit";
 
+        #endregion
+
         public Metadata(Workbook wb) : base(wb)
         {
             this.wb = wb;
@@ -43,88 +55,104 @@ namespace FlacToSpot
             ws.Cells.ColumnWidth = columnWidth;
         }
 
+        /// <summary>
+        /// Fill out all possible cells in metadata file
+        /// </summary>
+        /// <param name="album"></param>
+        /// <param name="manifest"></param>
+        /// <param name="startEndDates"></param>
         public void PopulateSheet(Album album, Manifest manifest, string[] startEndDates)
         {
-            SetHeaders();
-            FlacFile[] flacs = album.GetFlacs();
-
-            //Album data
-            Int64 upc = album.GetUPC(manifest);
-            string albumTitle = album.GetAlbumName();
-            string artist = album.GetArtists();
-            string genre = album.GetGenre();
-            string releaseDate = album.GetReleaseDate();
-            string coverartFilePath = album.CoverArt.FileName;
-            string pline = DateTime.Now.Year + " " + label;
-
-            string[] ISRCs = album.GetAllISRCs(manifest);
-            
-            //Iterate through rows
-            for (int row = 3; row < album.GetFlacs().Length+3; row++)
+            try
             {
-                int col = 1;
+                SetHeaders();
+                FlacFile[] flacs = album.GetFlacs();
 
-                //Album Data
-                ws.Cells[row, col] = upc;
-                ((Range)ws.Cells[row, col++]).NumberFormat = "0";
-                ws.Cells[row, col++] = label;
-                ws.Cells[row, col++] = albumTitle;
-                ws.Cells[row, col++] = version;
-                ws.Cells[row, col++] = artist;
-                ws.Cells[row, col++] = genre;
-                ws.Cells[row, col++] = releaseDate;
-                ws.Cells[row, col++] = coverartFilePath;
-                ws.Cells[row, col++] = pline;
-                ws.Cells[row, col++] = cline;
+                //Album data
+                Int64 upc = album.GetUPC(manifest);
+                string albumTitle = album.GetAlbumName();
+                string artist = album.GetArtists();
+                string genre = album.GetGenre();
+                string releaseDate = album.GetReleaseDate();
+                string coverartFilePath = album.CoverArt.FileName;
+                string pline = DateTime.Now.Year + " " + label;
 
-                //Track data
-                TagLib.Tag tag = flacs[row - 3].Tag;
+                string[] ISRCs = album.GetAllISRCs(manifest);
 
-                //Disc no
-                ws.Cells[row, col++] = (int)tag.Disc;
-                //Track no
-                ws.Cells[row, col++] = (int)tag.Track;
-                //ISRC
-                ws.Cells[row, col++] = ISRCs[row - 3];
-                //Title
-                ws.Cells[row, col++] = tag.Title;
-                //Version
-                ws.Cells[row, col++] = version;
-                //Artist(s)
-                ws.Cells[row, col++] = String.Join(", ", tag.Performers);
-                //Parental Warning
-                ws.Cells[row, col++] = parentalWarning;
-                //Pline
-                ws.Cells[row, col++] = "";
-                //Audio File Path
-                ws.Cells[row, col++] = flacs[row - 3].FileName;
-                //Start date
-                ws.Cells[row, col] = startEndDates[0];
-                ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
-                //End Date
-                ws.Cells[row, col] = startEndDates[1];
-                ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
-                //Territories
-                ws.Cells[row, col++] = "";
-                //Territories exclude
-                ws.Cells[row, col++] = "";
-                //Featured Artist
-                ws.Cells[row, col++] = "";
-                //Composer(s)
-                ws.Cells[row, col++] = String.Join(", ", tag.Composers);
-                //Lyricist
-                ws.Cells[row, col++] = "";
-                //Arranger
-                ws.Cells[row, col++] = "";
-                //Producer
-                ws.Cells[row, col++] = "";
-                //Remixer
-                ws.Cells[row, col++] = "";
-                
+                //Iterate through rows
+                for (int row = 3; row < album.GetFlacs().Length + 3; row++)
+                {
+                    int col = 1;
+
+                    //Album Data
+                    ws.Cells[row, col] = upc;
+                    ((Range)ws.Cells[row, col++]).NumberFormat = "0";
+                    ws.Cells[row, col++] = label;
+                    ws.Cells[row, col++] = albumTitle;
+                    ws.Cells[row, col++] = version;
+                    ws.Cells[row, col++] = artist;
+                    ws.Cells[row, col++] = genre;
+                    ws.Cells[row, col++] = releaseDate;
+                    ws.Cells[row, col++] = coverartFilePath;
+                    ws.Cells[row, col++] = pline;
+                    ws.Cells[row, col++] = cline;
+
+                    //Track data
+                    TagLib.Tag tag = flacs[row - 3].Tag;
+
+                    //Disc no
+                    ws.Cells[row, col++] = (int)tag.Disc;
+                    //Track no
+                    ws.Cells[row, col++] = (int)tag.Track;
+                    //ISRC
+                    ws.Cells[row, col++] = ISRCs[row - 3];
+                    //Title
+                    ws.Cells[row, col++] = tag.Title;
+                    //Version
+                    ws.Cells[row, col++] = version;
+                    //Artist(s)
+                    ws.Cells[row, col++] = String.Join(", ", tag.Performers);
+                    //Parental Warning
+                    ws.Cells[row, col++] = parentalWarning;
+                    //Pline
+                    ws.Cells[row, col++] = "";
+                    //Audio File Path
+                    ws.Cells[row, col++] = flacs[row - 3].FileName;
+                    //Start date
+                    ws.Cells[row, col] = startEndDates[0];
+                    ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
+                    //End Date
+                    ws.Cells[row, col] = startEndDates[1];
+                    ((Range)ws.Cells[row, col++]).NumberFormat = "yyyy-mm-dd";
+                    //Territories
+                    ws.Cells[row, col++] = "";
+                    //Territories exclude
+                    ws.Cells[row, col++] = "";
+                    //Featured Artist
+                    ws.Cells[row, col++] = "";
+                    //Composer(s)
+                    ws.Cells[row, col++] = String.Join(", ", tag.Composers);
+                    //Lyricist
+                    ws.Cells[row, col++] = "";
+                    //Arranger
+                    ws.Cells[row, col++] = "";
+                    //Producer
+                    ws.Cells[row, col++] = "";
+                    //Remixer
+                    ws.Cells[row, col++] = "";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
             
         }
 
+        /// <summary>
+        /// Put headers in file cells
+        /// </summary>
         private void SetHeaders()
         {
             //Album Data Header
@@ -164,7 +192,10 @@ namespace FlacToSpot
             }
         }
 
-
+        /// <summary>
+        /// Saves the metadata file in specified path
+        /// </summary>
+        /// <param name="path"></param>
         public void SaveFile(string path)
         {
             try

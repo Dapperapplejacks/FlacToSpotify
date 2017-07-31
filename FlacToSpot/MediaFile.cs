@@ -7,6 +7,9 @@ using System.IO;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Base class for FlacFile and CoverArt objects
+    /// </summary>
     class MediaFile
     {
 

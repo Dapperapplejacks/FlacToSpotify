@@ -42,7 +42,6 @@ namespace FlacToSpot
         /// <param name="e">Unused</param>
         private void SelectAlbumDirClick(object sender, EventArgs e)
         {
-
             string dirString = "";
 
             try
@@ -213,9 +212,10 @@ namespace FlacToSpot
         /// <param name="e">Unused</param>
         private void ProcessFilesClick(object sender, EventArgs e)
         {
-
             ProcessFilesButton.Text = "Processing...";
             ProcessFilesButton.Enabled = false;
+
+            bool success = true;
             
             try
             {
@@ -227,24 +227,55 @@ namespace FlacToSpot
                 {
                     throw new Exception("UPC Manifest Not Selected");
                 }
+                if (dirHandler.DestinationDirectory == "" || dirHandler.DestinationDirectory == null)
+                {
+                    throw new Exception("Destination Directory Not Selected");
+                }
 
-                dirHandler.ProcessAlbum();
+                try
+                {
+                    dirHandler.ProcessAlbum();
 
-                string[] startEndDates = GetStartEndDates();
+                    try
+                    {
+                        string[] startEndDates = GetStartEndDates();
 
-                excelHandler.CreateMetaData(dirHandler.Album, startEndDates);
+                        excelHandler.CreateMetaData(dirHandler.Album, startEndDates);
+                    }
+                    catch(Exception ex){
+                        MessageBox.Show("Unable to create metadata file. Ending processing. Error: " + ex.Message, "Error");
 
+                        DoneLabel.Visible = true;
+                        DoneLabel.Text = "Moved/Renamed album files, unsuccessfully created metadata for: " + dirHandler.Album.GetAlbumName();
+
+                        success = false;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("Unable to move/rename album files. Ending processing. Error: " + ex.Message, "Error");
+                    
+                    DoneLabel.Visible = true;
+                    DoneLabel.Text = "Unsuccessfully moved/renamed album files, metadata file not created for: " + dirHandler.Album.GetAlbumName();
+
+                    success = false;
+                }
+
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
+            if (success)
+            {
                 DoneLabel.Visible = true;
                 DoneLabel.Text = "Finished processing: " + dirHandler.Album.GetAlbumName();
-
-                ResetDisplay();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.Message);
             }
 
-            
+            ResetDisplay();
+
         }
 
         /// <summary>

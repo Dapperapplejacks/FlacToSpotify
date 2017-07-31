@@ -10,6 +10,9 @@ using System.Runtime.InteropServices;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Handles reading the UPC/ISRC manifest and creating the metadata file
+    /// </summary>
     class ExcelHandler
     {
         private Microsoft.Office.Interop.Excel.Application xlApp;
@@ -29,6 +32,11 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Reads manifest excel file
+        /// </summary>
+        /// <param name="path">Path of manifest</param>
+        /// <returns>Manifest object</returns>
         private Manifest ReadManifest(string path)
         {
             try
@@ -47,6 +55,11 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Creates metadata excel file and saves it in destination folder
+        /// </summary>
+        /// <param name="album">Album to make metadata file for</param>
+        /// <param name="startEndDates">Array of start and end dates taken from GUI</param>
         public void CreateMetaData(Album album, string[] startEndDates)
         {
             Metadata metadata = new Metadata(workbooks.Add());
@@ -59,6 +72,9 @@ namespace FlacToSpot
             workbooks = xlApp.Workbooks; 
         }
 
+        /// <summary>
+        /// Used for properly releasing excel resources
+        /// </summary>
         public void CleanUp()
         {
             xlApp.Quit();

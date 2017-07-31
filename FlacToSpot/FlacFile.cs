@@ -6,10 +6,18 @@ using System.Reflection;
 
 namespace FlacToSpot
 {
+    /// <summary>
+    /// Abstraction for Flac file
+    /// </summary>
     class FlacFile : MediaFile
     {
-        private Tag tag;
 
+        private Tag tag;
+        
+        /// <summary>
+        /// Reference to data stored in Flac file, such as Album title, track number, Artist, etc..
+        /// See TagLib for more info.
+        /// </summary>
         public Tag Tag
         {
             get

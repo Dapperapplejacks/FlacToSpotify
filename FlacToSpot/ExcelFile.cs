@@ -9,8 +9,9 @@ using System.Runtime.InteropServices;
 
 namespace FlacToSpot
 {
-
-    
+    /// <summary>
+    /// Abstraction for an Excel file
+    /// </summary>
     class ExcelFile
     {
         protected Workbook wb;
@@ -31,6 +32,9 @@ namespace FlacToSpot
             ws = (Worksheet)worksheets.get_Item(1);
         }
 
+        /// <summary>
+        /// Used for properly releasing excel resources
+        /// </summary>
         public void CleanUp()
         {
             if (ws != null)

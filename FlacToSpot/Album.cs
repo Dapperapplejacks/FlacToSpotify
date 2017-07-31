@@ -205,11 +205,6 @@ namespace FlacToSpot
 
             this.UPC = manifest.GetUPC(GetAlbumTitle());
 
-            if (this.UPC == 0)
-            {
-                MessageBox.Show("Unable to obtain UPC for Album: " + GetAlbumTitle());
-            }
-
             return this.UPC;
         }
 
@@ -223,16 +218,17 @@ namespace FlacToSpot
             if (this.ISRCs != null)
             {
                 return this.ISRCs;
-            } 
+            }
+
+            string[] ISRCs = new string[GetTrackCount()];
 
             string startISRC = manifest.GetISRC(GetAlbumName());
             if (startISRC.Equals(""))
             {
-                MessageBox.Show("Could not find ISRC for Album: " + GetAlbumName());
-                return null;
+                ISRCs.Initialize();
+                return ISRCs;
             }
-
-            string[] ISRCs = new string[GetTrackCount()];
+            
             string[] tokens = startISRC.Split('-');
             int start = Convert.ToInt32(tokens[tokens.Length - 1]);
 
