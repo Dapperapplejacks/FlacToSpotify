@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Windows.Forms;
 
 namespace FlacToSpot
 {
@@ -70,6 +71,13 @@ namespace FlacToSpot
 
                 //Album data
                 Int64 upc = album.GetUPC(manifest);
+
+                if (upc == 0)
+                {
+                    MessageBox.Show("Unable to find Album Title '" + album.GetAlbumTitle() + "' in UPC/ISRC file." +
+                    "UPC and ISRCs will be left blank in metadata file", "Warning");
+                }
+
                 string albumTitle = album.GetAlbumName();
                 string artist = album.GetArtists();
                 string genre = album.GetGenre();

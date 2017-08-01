@@ -261,7 +261,12 @@ namespace FlacToSpot
 
         public int GetTrackCount()
         {
-            return (int)_CDs[0].FlacFiles[0].Tag.TrackCount;
+            int sum = 0;
+
+            foreach(CD cd in _CDs){
+                sum += cd.FlacFiles.Length;
+            }
+            return sum;
         }
     }
 }

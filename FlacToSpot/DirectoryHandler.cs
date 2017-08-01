@@ -145,7 +145,20 @@ namespace FlacToSpot
             int month = dateTime.Month;
             int day = dateTime.Day;
 
-            string date = "" + year + month + day;
+            string strYear = year.ToString();
+            string strMonth = month.ToString();
+            string strDay = day.ToString();
+
+            if (month < 10)
+            {
+                strMonth = "0" + month;
+            }
+            if (day < 10)
+            {
+                strDay = "0" + day;
+            }
+
+            string date = strYear + strMonth + strDay;
 
             int delNumber = 1;
             string name = date + "_01";
@@ -201,14 +214,10 @@ namespace FlacToSpot
             int cdCount = 1;
             foreach (CD cd in album.CDs)
             {
-                int flacCount = 1;
-                foreach (MediaFile file in cd.FlacFiles)
+                foreach (FlacFile file in cd.FlacFiles)
                 {
-                    if (file.Extension.Equals(".flac"))
-                    {
-                        string newName = cdCount + "_" + flacCount++ + ".flac";
-                        file.FileName = newName;
-                    }
+                    string newName = cdCount + "_" + file.Tag.Track + ".flac";
+                    file.FileName = newName;
                 }
 
                 cdCount++;

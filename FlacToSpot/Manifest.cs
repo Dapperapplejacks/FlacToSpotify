@@ -40,7 +40,7 @@ namespace FlacToSpot
             titleCol = 0;
             
             CheckHeaders();
-            rowCount = ws.Rows.Count;
+            rowCount = ws.UsedRange.Rows.Count;
         }
 
         private void CheckHeaders()
@@ -74,26 +74,22 @@ namespace FlacToSpot
 
             if (titleCol == 0)
             {
-                MessageBox.Show("Unable to find Album Titles in UPC/ISRC file. Header of column must contain 'Title'." +
+                MessageBox.Show("Unable to find Album Titles column in UPC/ISRC file. Header of column must contain 'Title'." +
                 "UPC and ISRCs will be left blank in metadata file", "Warning");
             }
             else
             {
                 if (ISRCcol == 0)
                 {
-                    MessageBox.Show("Unable to find Beginning ISRCs in UPC/ISRC file. Header of column must contain 'ISRC'." + 
+                    MessageBox.Show("Unable to find Beginning ISRCs column in UPC/ISRC file. Header of column must contain 'ISRC'." + 
                     "ISRCs will be left blank in metadata file", "Warning");
                 }
                 if (UPCcol == 0)
                 {
-                    MessageBox.Show("Unable to find UPC numbers in UPC/ISRC file. Header of column must contain 'UPC'." + 
+                    MessageBox.Show("Unable to find UPC column in UPC/ISRC file. Header of column must contain 'UPC'." + 
                     "UPCs will be left blank in metadata file", "Warning");
                 }
             }
-
-            
-            
-
         }
 
         /// <summary>
@@ -132,11 +128,11 @@ namespace FlacToSpot
                 return firstISRC;
             }
 
-            for (int row = 2; row < RowCount; row++)
+            for (int row = 2; row <= RowCount; row++)
             {
                 //Get album title from manifest
                 Range cell = GetCell(row, titleCol);
-                string cellVal = (string)cell.Value.ToString();
+                string cellVal = (string)cell.Value as string;
 
                 if (cellVal == null)
                 {
@@ -170,11 +166,11 @@ namespace FlacToSpot
                 return upc;
             }
 
-            for (int row = 2; row < RowCount; row++)
+            for (int row = 2; row <= RowCount; row++)
             {
                 //Get album title from manifest
                 Range cell = GetCell(row, titleCol);
-                string cellVal = (string)cell.Value.ToString();
+                string cellVal = (string)cell.Value as string;
 
                 if (cellVal == null)
                 {
