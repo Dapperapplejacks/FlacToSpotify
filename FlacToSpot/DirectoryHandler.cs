@@ -208,19 +208,29 @@ namespace FlacToSpot
         /// </summary>
         private void RenameFiles()
         {
-
             album.CoverArt.FileName = "coverart" + album.CoverArt.Extension;
+            Application.ProcessProgress.PerformStep();
 
-            int cdCount = 1;
+            //int cdCount = 1;
             foreach (CD cd in album.CDs)
             {
                 foreach (FlacFile file in cd.FlacFiles)
                 {
-                    string newName = cdCount + "_" + file.Tag.Track + ".flac";
-                    file.FileName = newName;
+                    try
+                    {
+                        uint disc = file.Tag.Disc == 0 ? 1 : file.Tag.Disc;
+                        string newName = disc + "_" + file.Tag.Track + ".flac";
+                        file.FileName = newName;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+
+                    Application.ProcessProgress.PerformStep();
                 }
 
-                cdCount++;
+                //cdCount++;
             }
         }
 
@@ -237,13 +247,14 @@ namespace FlacToSpot
                 try
                 {
                     string destPath = Path.Combine(destination, files[i].FileName);
-
                     File.Move(files[i].Path, destPath);
                 }
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
+
+                Application.ProcessProgress.PerformStep();
             }
         }
 

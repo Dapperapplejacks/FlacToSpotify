@@ -14,7 +14,7 @@ namespace FlacToSpot
     class CD
     {
         private FlacFile[] flacFiles;
-        private string path;
+        //private string path;
 
         public FlacFile[] FlacFiles
         {
@@ -28,7 +28,7 @@ namespace FlacToSpot
             }
         }
 
-        public string Path
+        /*public string Path
         {
             get
             {
@@ -38,14 +38,16 @@ namespace FlacToSpot
             {
                 path = value;
             }
-        }
+        }*/
 
         /// <summary>
         /// Creates instance of CD, finds flac files in the CD's directory
         /// </summary>
         /// <param name="path">Path of this CD directory</param>
-        public CD(string path)
+        public CD(FlacFile[] flacs)
         {
+            flacFiles = flacs;
+            /*
             this.path = path;
             
             string[] flacFilePaths = Directory.EnumerateFiles(path, "*.flac").ToArray();
@@ -61,6 +63,7 @@ namespace FlacToSpot
             {
                 flacFiles[i] = new FlacFile(flacFilePaths[i]);
             }
+             * */
         }
     }
 }

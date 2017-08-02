@@ -42,6 +42,7 @@ namespace FlacToSpot
             this.EndDatePicker = new System.Windows.Forms.DateTimePicker();
             this.StartDateLabel = new System.Windows.Forms.Label();
             this.EndDateCheck = new System.Windows.Forms.CheckBox();
+            ProcessProgress = new System.Windows.Forms.ProgressBar();
             this.FileTable.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -159,6 +160,7 @@ namespace FlacToSpot
             // 
             this.DoneLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.DoneLabel.AutoEllipsis = true;
             this.DoneLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DoneLabel.Location = new System.Drawing.Point(0, 498);
             this.DoneLabel.Name = "DoneLabel";
@@ -210,6 +212,19 @@ namespace FlacToSpot
             this.EndDateCheck.UseVisualStyleBackColor = true;
             this.EndDateCheck.CheckedChanged += new System.EventHandler(this.EndDateCheck_CheckedChanged);
             // 
+            // ProcessProgress
+            // 
+            ProcessProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            ProcessProgress.Location = new System.Drawing.Point(12, 492);
+            ProcessProgress.Minimum = 1;
+            ProcessProgress.Name = "ProcessProgress";
+            ProcessProgress.Size = new System.Drawing.Size(461, 32);
+            ProcessProgress.Step = 1;
+            ProcessProgress.TabIndex = 11;
+            ProcessProgress.Value = 1;
+            ProcessProgress.Visible = false;
+            // 
             // Application
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -217,6 +232,7 @@ namespace FlacToSpot
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(484, 529);
+            this.Controls.Add(ProcessProgress);
             this.Controls.Add(this.EndDateCheck);
             this.Controls.Add(this.StartDateLabel);
             this.Controls.Add(this.EndDatePicker);
@@ -254,6 +270,7 @@ namespace FlacToSpot
         private System.Windows.Forms.DateTimePicker EndDatePicker;
         private System.Windows.Forms.Label StartDateLabel;
         private System.Windows.Forms.CheckBox EndDateCheck;
+        public static System.Windows.Forms.ProgressBar ProcessProgress;
     }
 }
 

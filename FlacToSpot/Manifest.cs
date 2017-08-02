@@ -74,19 +74,19 @@ namespace FlacToSpot
 
             if (titleCol == 0)
             {
-                MessageBox.Show("Unable to find Album Titles column in UPC/ISRC file. Header of column must contain 'Title'." +
+                MessageBox.Show("Unable to find Album Titles column in UPC/ISRC file. Header of column must contain 'Title'.\n" +
                 "UPC and ISRCs will be left blank in metadata file", "Warning");
             }
             else
             {
                 if (ISRCcol == 0)
                 {
-                    MessageBox.Show("Unable to find Beginning ISRCs column in UPC/ISRC file. Header of column must contain 'ISRC'." + 
+                    MessageBox.Show("Unable to find Beginning ISRCs column in UPC/ISRC file. Header of column must contain 'ISRC'.\n" + 
                     "ISRCs will be left blank in metadata file", "Warning");
                 }
                 if (UPCcol == 0)
                 {
-                    MessageBox.Show("Unable to find UPC column in UPC/ISRC file. Header of column must contain 'UPC'." + 
+                    MessageBox.Show("Unable to find UPC column in UPC/ISRC file. Header of column must contain 'UPC'.\n" + 
                     "UPCs will be left blank in metadata file", "Warning");
                 }
             }

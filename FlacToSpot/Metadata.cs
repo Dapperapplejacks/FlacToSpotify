@@ -25,10 +25,10 @@ namespace FlacToSpot
         /// </summary>
         private readonly List<string> headers2 = new List<string>()
             {
-                "upc", "label", "title", "version", "artist", "genre", "original release date\nYYYY, YYYY-MM or YYYY-MM-DD",
+                "upc", "label", "title", "version", "artist(s)", "genre", "original release date\nYYYY, YYYY-MM or YYYY-MM-DD",
                 "coverart file path", "pline", "cline", 
                 
-                "disc no", "track no", "ISRC", "title", "version", "artist", 
+                "disc no", "track no", "ISRC", "title", "version", "artist(s)", 
                 "Parental warning", "pline", "audio file path", "start date\nYYYY-MM-DD", "end date\nYYYY-MM-DD",
                 "territories", "territories exclude", "featured artist", "composer", "lyricist", "arranger", "producer",
                 "remixer"
@@ -74,7 +74,7 @@ namespace FlacToSpot
 
                 if (upc == 0)
                 {
-                    MessageBox.Show("Unable to find Album Title '" + album.GetAlbumTitle() + "' in UPC/ISRC file." +
+                    MessageBox.Show("Unable to find Album Title '" + album.GetAlbumTitle() + "' in UPC/ISRC file.\n" +
                     "UPC and ISRCs will be left blank in metadata file", "Warning");
                 }
 
@@ -93,7 +93,7 @@ namespace FlacToSpot
                     int col = 1;
 
                     //Album Data
-                    ws.Cells[row, col] = upc;
+                    ws.Cells[row, col] = upc==0 ? "" : upc.ToString();
                     ((Range)ws.Cells[row, col++]).NumberFormat = "0";
                     ws.Cells[row, col++] = label;
                     ws.Cells[row, col++] = albumTitle;
@@ -109,7 +109,7 @@ namespace FlacToSpot
                     TagLib.Tag tag = flacs[row - 3].Tag;
 
                     //Disc no
-                    ws.Cells[row, col++] = (int)tag.Disc;
+                    ws.Cells[row, col++] = tag.Disc == 0 ? 1 : (int)tag.Disc;
                     //Track no
                     ws.Cells[row, col++] = (int)tag.Track;
                     //ISRC
@@ -149,6 +149,7 @@ namespace FlacToSpot
                     //Remixer
                     ws.Cells[row, col++] = "";
 
+                    Application.ProcessProgress.PerformStep();
                 }
             }
             catch (Exception ex)

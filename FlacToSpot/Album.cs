@@ -22,6 +22,7 @@ namespace FlacToSpot
         private string path;
         private Int64 UPC;
         private string[] ISRCs;
+        private FlacFile[] flacs;
 
 
         public CD[] CDs
@@ -72,10 +73,44 @@ namespace FlacToSpot
         {
             this.path = path;
 
-            string[] cds = Directory.EnumerateDirectories(path).ToArray();
+            //string[] cds = Directory.EnumerateDirectories(path).ToArray();
+
+            string[] flacs = Directory.EnumerateFiles(path, "*.flac", SearchOption.AllDirectories).ToArray<string>();
+
+            if (flacs.Length == 0)
+            {
+                throw new Exception("No FLAC files found");
+            }
+
+            uint discCount = TagLib.File.Create(flacs[0]).Tag.DiscCount;
+            if (discCount == 0)
+            {
+                _CDs = new CD[1];
+            }
+            else
+            {
+                _CDs = new CD[discCount];
+            }
 
             try
             {
+                List<FlacFile> flacList = new List<FlacFile>();
+                foreach (string fPath in flacs)
+                {
+                    FlacFile flac  = new FlacFile(fPath);
+                    flacList.Add(flac);
+                }
+
+                this.flacs = flacList.ToArray<FlacFile>();
+
+                for (int i = 0; i < _CDs.Length; i++)
+                {
+                     
+                    FlacFile[] cdFlacs = this.flacs.Where(flac => ((flac.Tag.Disc == 0 && i == 0) || flac.Tag.Disc == i+1)).ToArray<FlacFile>();
+                    _CDs[i] = new CD(cdFlacs);
+                }
+
+                /*
                 if (cds.Length == 0)
                 {
                     CDs = new CD[1];
@@ -89,7 +124,7 @@ namespace FlacToSpot
                     {
                         CDs[i] = new CD(cds[i]);
                     }
-                }
+                }*/
 
                 coverArt = ExtractCoverArt();
             }
@@ -165,6 +200,7 @@ namespace FlacToSpot
         /// <returns>List of all flac files in album</returns>
         public FlacFile[] GetFlacs()
         {
+            /*
             List<FlacFile> flacFiles = new List<FlacFile>();
 
             foreach (CD cd in _CDs)
@@ -175,7 +211,8 @@ namespace FlacToSpot
                 }
             }
 
-            return flacFiles.ToArray();
+            return flacFiles.ToArray();*/
+            return flacs;
         }
 
         public string GetAlbumName()

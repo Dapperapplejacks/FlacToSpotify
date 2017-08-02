@@ -103,6 +103,7 @@ namespace FlacToSpot
         private string GetDirectoryString()
         {
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+            
             DialogResult result = ((CommonDialog)folderBrowserDialog).ShowDialog();
 
             if (result == DialogResult.OK)
@@ -212,9 +213,6 @@ namespace FlacToSpot
         /// <param name="e">Unused</param>
         private void ProcessFilesClick(object sender, EventArgs e)
         {
-            ProcessFilesButton.Text = "Processing...";
-            ProcessFilesButton.Enabled = false;
-
             bool success = true;
             
             try
@@ -234,6 +232,15 @@ namespace FlacToSpot
 
                 try
                 {
+                    ProcessFilesButton.Text = "Processing...";
+                    ProcessFilesButton.Enabled = false;
+                    ProcessFilesButton.UseWaitCursor = true;
+
+                    ProcessProgress.Visible = true;
+                    ProcessProgress.Maximum = dirHandler.Album.GetTrackCount() * 3 + 1;  //Moving/naming each file, and going through each row for metadata
+                    ProcessProgress.Step = 1;
+
+
                     dirHandler.ProcessAlbum();
 
                     try
@@ -243,8 +250,10 @@ namespace FlacToSpot
                         excelHandler.CreateMetaData(dirHandler.Album, startEndDates);
                     }
                     catch(Exception ex){
-                        MessageBox.Show("Unable to create metadata file. Ending processing. Error: " + ex.Message, "Error");
+                        MessageBox.Show("Unable to create metadata file. Ending processing.\n\nError: " + ex.Message, "Error");
 
+                        ProcessProgress.Value = 1;
+                        ProcessProgress.Visible = false;
                         DoneLabel.Visible = true;
                         DoneLabel.Text = "Moved/Renamed album files, unsuccessfully created metadata for: " + dirHandler.Album.GetAlbumName();
 
@@ -253,8 +262,10 @@ namespace FlacToSpot
                 }
                 catch(Exception ex)
                 {
-                    MessageBox.Show("Unable to move/rename album files. Ending processing. Error: " + ex.Message, "Error");
-                    
+                    MessageBox.Show("Unable to move/rename album files. Ending processing.\n\nError: " + ex.Message, "Error");
+
+                    ProcessProgress.Value = 1;
+                    ProcessProgress.Visible = false;
                     DoneLabel.Visible = true;
                     DoneLabel.Text = "Unsuccessfully moved/renamed album files, metadata file not created for: " + dirHandler.Album.GetAlbumName();
 
@@ -270,6 +281,8 @@ namespace FlacToSpot
 
             if (success)
             {
+                ProcessProgress.Value = 1;
+                ProcessProgress.Visible = false;
                 DoneLabel.Visible = true;
                 DoneLabel.Text = "Finished processing: " + dirHandler.Album.GetAlbumName();
             }
@@ -286,6 +299,7 @@ namespace FlacToSpot
         {
             ProcessFilesButton.Text = "Process Files";
             ProcessFilesButton.Enabled = true;
+            ProcessFilesButton.UseWaitCursor = false;
             dirHandler.ResetAlbum();
             this.SelectAlbumButton.Text = "Select Album Directory";
             FileTable.Controls.Clear();
