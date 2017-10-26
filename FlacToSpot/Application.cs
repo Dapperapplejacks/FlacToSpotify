@@ -24,9 +24,32 @@ namespace FlacToSpot
         /// </summary>
         public Application()
         {
-            InitializeComponent();
+            //MessageBox.Show("Initializing window components");
 
-            excelHandler = new ExcelHandler();
+            try
+            {
+                InitializeComponent();
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed initialization: " + ex.Message);
+                this.Close();
+            }
+
+            //MessageBox.Show("Initialized window components");
+
+            try
+            {
+                excelHandler = new ExcelHandler();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Excel is not properly installed\nExiting application", "Excel Error");
+                this.Close();
+            }
+
+            //MessageBox.Show("Exccel Handler properly initialized");
         }
 
         #region Select Directories
@@ -126,29 +149,36 @@ namespace FlacToSpot
         /// </summary>
         private void UpdateFileTable()
         {
-
-            FileTable.Controls.Clear();
-            FileTable.RowStyles.Clear();
-            FileTable.Controls.Add(this.ExtensionLabel, 1, 0);
-            FileTable.Controls.Add(this.FileLabel, 0, 0);
-            FileTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-
-            MediaFile[] files = dirHandler.Album.GetAlbumFiles();
-
-            FileTable.RowCount = files.Count() + 1;
-
-            for (int i = 1; i < FileTable.RowCount; i++)
+            try
             {
-                RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25f);
+                FileTable.Controls.Clear();
+                FileTable.RowStyles.Clear();
+                FileTable.Controls.Add(this.ExtensionLabel, 1, 0);
+                FileTable.Controls.Add(this.FileLabel, 0, 0);
+                FileTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
 
-                FileTable.RowStyles.Add(rowStyle);
+                MediaFile[] files = dirHandler.Album.GetAlbumFiles();
 
-                string fileName = files[i-1].FileName;
-                string extension = files[i-1].Extension;
+                FileTable.RowCount = files.Count() + 1;
 
-                AddLabelToTable(fileName, 0, i);
-                AddLabelToTable(extension, 1, i);
+                for (int i = 1; i < FileTable.RowCount; i++)
+                {
+                    RowStyle rowStyle = new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25f);
 
+                    FileTable.RowStyles.Add(rowStyle);
+
+                    string fileName = files[i - 1].FileName;
+                    string extension = files[i - 1].Extension;
+
+                    AddLabelToTable(fileName, 0, i);
+                    AddLabelToTable(extension, 1, i);
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unexpected Error: " + ex.Message);
             }
         }
 
@@ -322,6 +352,7 @@ namespace FlacToSpot
         /// <param name="e">Unused</param>
         private void Application_Load(object sender, EventArgs e)
         {
+
             this.FormClosing += new FormClosingEventHandler(FormClosingHandler);
         }
 

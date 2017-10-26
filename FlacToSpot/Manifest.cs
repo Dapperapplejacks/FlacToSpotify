@@ -19,6 +19,10 @@ namespace FlacToSpot
         private int UPCcol;
         private int titleCol;
 
+        //Used for prompt if album in metadata doesn't match any manifest albums
+        //Key is album name, value will be row in manifest that the album name is in
+        private Dictionary<string, int> albumTitleDict;
+
         private int rowCount;
         public int RowCount
         {
@@ -132,23 +136,37 @@ namespace FlacToSpot
             {
                 //Get album title from manifest
                 Range cell = GetCell(row, titleCol);
-                string cellVal = (string)cell.Value as string;
+                string albumCellVal = (string)cell.Value as string;
 
-                if (cellVal == null)
+                if (albumCellVal == null)
                 {
                     continue;
                 }
                 
                 //Check if this row pertains to our current album
-                if (cellVal.Equals(albumTitle))
+                if (albumCellVal.Equals(albumTitle))
                 {
                     //Grab first ISRC
                     var value = GetCell(row, ISRCcol).Value;
                     firstISRC = value.ToString();
                     return firstISRC;
                 }
+                //If not this row, add dictionary for manual album selection prompt later
+                else
+                {
+                    try
+                    {
+                        albumTitleDict.Add(albumCellVal, row);
+                    }
+                    catch(ArgumentException)
+                    {
+                        //already in dictionary
+                    }
+                }
             }
+            //Couldn't find album, open window to manually find album title in manifest 
 
+            //TODO: open up album pick form
             return firstISRC;
         }
 

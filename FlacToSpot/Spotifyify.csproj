@@ -83,6 +83,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Album.cs" />
+    <Compile Include="AlbumPickForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlbumPickForm.Designer.cs">
+      <DependentUpon>AlbumPickForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CD.cs" />
     <Compile Include="CoverArt.cs" />
     <Compile Include="DirectoryHandler.cs" />
@@ -100,6 +106,9 @@
     <Compile Include="Metadata.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AlbumPickForm.resx">
+      <DependentUpon>AlbumPickForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Application.resx">
       <DependentUpon>Application.cs</DependentUpon>
     </EmbeddedResource>

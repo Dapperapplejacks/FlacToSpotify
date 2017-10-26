@@ -27,7 +27,6 @@ namespace FlacToSpot
 
             if (xlApp == null)
             {
-                MessageBox.Show("Excel is not properly installed\nExiting application", "Excel Error");
                 throw new Exception();
             }
         }
