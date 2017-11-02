@@ -1,18 +1,67 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Abstraction of metadata file
     /// </summary>
     class Metadata : ExcelFile
     {
+        #region Constants
+        /// <summary>
+        /// Filename for metadata file
+        /// </summary>
+        const string fileName = "metadata.xlsx";
+
+        /// <summary>
+        /// Name of metadata spreadsheet
+        /// </summary>
+        const string sheetName = "meta";
+
+        /// <summary>
+        /// Font size for metadata spreadshet
+        /// </summary>
+        const int fontSize = 10;
+
+        /// <summary>
+        /// Column width for metadata spreadsheet
+        /// </summary>
+        const int columnWidth = 13;
+
+        /// <summary>
+        /// Version for each album
+        /// For current implementation
+        /// </summary>
+        const string version = "";
+
+        /// <summary>
+        /// Label name for each album
+        /// For current implementation
+        /// </summary>
+        const string label = "Orange Mountain Music";
+
+        /// <summary>
+        /// Cline for each album
+        /// For current implementation
+        /// </summary>
+        const string cline = "";
+
+        /// <summary>
+        /// Parental Warning for each album
+        /// For current implementation
+        /// </summary>
+        const string parentalWarning = "not-explicit";
+
+        #endregion
+
+        #region Readonly
+
         /// <summary>
         /// First row headers
         /// </summary>
@@ -34,20 +83,14 @@ namespace FlacToSpot
                 "remixer"
             };
 
-        #region Constants
-
-        const string fileName = "metadata.xlsx";
-        const string sheetName = "meta";
-        const int fontSize = 10;
-        const int columnWidth = 13;
-
-        const string version = "";
-        const string label = "Orange Mountain Music";
-        const string cline = "";
-        const string parentalWarning = "not-explicit";
-
         #endregion
 
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the Metdata class
+        /// </summary>
+        /// <param name="wb">Excel Workbook object to be used</param>
         public Metadata(Workbook wb) : base(wb)
         {
             this.wb = wb;
@@ -56,6 +99,9 @@ namespace FlacToSpot
             ws.Cells.ColumnWidth = columnWidth;
         }
 
+        #endregion
+
+        #region Public methods
         /// <summary>
         /// Fill out all possible cells in metadata file
         /// </summary>
@@ -67,16 +113,22 @@ namespace FlacToSpot
             try
             {
                 SetHeaders();
-                FlacFile[] flacs = album.GetFlacs();
+                FlacFile[] flacs = album.Flacs;
 
                 //Album data
                 Int64 upc = album.GetUPC(manifest);
-
+                string[] ISRCs = album.GetAllISRCs(manifest);
                 if (upc == 0)
                 {
-                    MessageBox.Show("Unable to find Album Title '" + album.GetAlbumTitle() + "' in UPC/ISRC file.\n" +
-                    "UPC and ISRCs will be left blank in metadata file", "Warning");
+                    MessageBox.Show("Unable to automatically fill UPC.\n" +
+                    "UPC will be left blank in metadata file", "Warning");
                 }
+                if (string.IsNullOrEmpty(ISRCs[0]))
+                {
+                    MessageBox.Show("Unable to automatically fill ISRCs.\n" +
+                    "ISRCs will be left blank in metadata file", "Warning");
+                }
+                
 
                 string albumTitle = album.GetAlbumName();
                 string artist = album.GetArtists();
@@ -85,10 +137,10 @@ namespace FlacToSpot
                 string coverartFilePath = album.CoverArt.FileName;
                 string pline = DateTime.Now.Year + " " + label;
 
-                string[] ISRCs = album.GetAllISRCs(manifest);
+                
 
                 //Iterate through rows
-                for (int row = 3; row < album.GetFlacs().Length + 3; row++)
+                for (int row = 3; row < album.Flacs.Length + 3; row++)
                 {
                     int col = 1;
 
@@ -149,7 +201,8 @@ namespace FlacToSpot
                     //Remixer
                     ws.Cells[row, col++] = "";
 
-                    Application.ProcessProgress.PerformStep();
+                    ((Application)Application.ActiveForm).ProcessProgress.PerformStep();
+
                 }
             }
             catch (Exception ex)
@@ -158,6 +211,28 @@ namespace FlacToSpot
             }
             
         }
+
+        /// <summary>
+        /// Saves the metadata file in specified path
+        /// </summary>
+        /// <param name="path">Path to where the file will be saved</param>
+        public void SaveFile(string path)
+        {
+            try
+            {
+                string namePath = Path.Combine(path, fileName);
+                wb.SaveAs(namePath, Type.Missing, Type.Missing, Type.Missing, false);
+
+                CleanUp();
+            }
+
+            catch (Exception)
+            {
+                throw new Exception("Error Saving Metadata File");
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Put headers in file cells
@@ -201,25 +276,7 @@ namespace FlacToSpot
             }
         }
 
-        /// <summary>
-        /// Saves the metadata file in specified path
-        /// </summary>
-        /// <param name="path"></param>
-        public void SaveFile(string path)
-        {
-            try
-            {
-                string namePath = Path.Combine(path, fileName);
-                wb.SaveAs(namePath, Type.Missing, Type.Missing, Type.Missing, false);
-
-                CleanUp();
-            }
-
-            catch (Exception ex)
-            {
-                throw new Exception("Error Saving Metadata File");
-            }
-        }
+        
 
     }
 }

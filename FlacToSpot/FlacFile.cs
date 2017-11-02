@@ -1,17 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using TagLib;
-using System.Reflection;
+﻿using TagLib;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Abstraction for Flac file
     /// </summary>
     class FlacFile : MediaFile
     {
-
+        /// <summary>
+        /// Field for tag
+        /// </summary>
         private Tag tag;
         
         /// <summary>
@@ -29,6 +27,10 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Initializaes a new instance of the FlacFile class
+        /// </summary>
+        /// <param name="path"></param>
         public FlacFile(string path)
             : base(path)
         {
@@ -37,6 +39,5 @@ namespace FlacToSpot
 
             Tag = file.Tag;
         }
-
     }
 }

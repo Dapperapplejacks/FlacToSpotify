@@ -52,6 +52,7 @@
             this.AlbumTitleListBox.Name = "AlbumTitleListBox";
             this.AlbumTitleListBox.Size = new System.Drawing.Size(319, 251);
             this.AlbumTitleListBox.TabIndex = 1;
+            this.AlbumTitleListBox.SelectedValueChanged += new System.EventHandler(this.AlbumTitleListBox_SelectedValueChanged);
             // 
             // Accept
             // 
@@ -62,7 +63,7 @@
             this.Accept.TabIndex = 2;
             this.Accept.Text = "Accept";
             this.Accept.UseVisualStyleBackColor = true;
-            this.Accept.Click += new System.EventHandler(this.Accept_Click);
+            this.Accept.Click += new System.EventHandler(this.AcceptButton_Click);
             // 
             // TitleSearchBar
             // 
@@ -81,14 +82,12 @@
             this.Cancel.TabIndex = 4;
             this.Cancel.Text = "Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
-            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+            this.Cancel.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // AlbumPickForm
             // 
-            this.AcceptButton = this.Accept;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.Cancel;
             this.ClientSize = new System.Drawing.Size(346, 411);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.TitleSearchBar);

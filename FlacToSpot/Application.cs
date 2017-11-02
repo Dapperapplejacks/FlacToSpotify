@@ -1,22 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     public partial class Application : Form
     {
+        #region Fields
 
+        /// <summary>
+        /// Field for DirectoryHandler object
+        /// </summary>
         private DirectoryHandler dirHandler;
+
+        /// <summary>
+        /// FIeld for ExcelHandler object
+        /// </summary>
         private ExcelHandler excelHandler;
 
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Constructor for Application class.
         /// This will initialize all components,
@@ -43,7 +49,7 @@ namespace FlacToSpot
             {
                 excelHandler = new ExcelHandler();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 MessageBox.Show("Excel is not properly installed\nExiting application", "Excel Error");
                 this.Close();
@@ -51,6 +57,8 @@ namespace FlacToSpot
 
             //MessageBox.Show("Exccel Handler properly initialized");
         }
+
+        #endregion
 
         #region Select Directories
 
@@ -93,7 +101,7 @@ namespace FlacToSpot
 
                 DoneLabel.Visible = false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Dont do anything, cancel pressed
             }
@@ -113,7 +121,7 @@ namespace FlacToSpot
                 dirHandler.DestinationDirectory = GetDirectoryString();
                 this.SelectDeliveryButton.Text = "Destination Directory: " + dirHandler.DestinationDirectory;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Dont do anything, cancel pressed
             }
@@ -200,6 +208,8 @@ namespace FlacToSpot
 
         #endregion
 
+        #region Event Handlers
+
         /// <summary>
         /// Button click handler for the Select UPC Button.
         /// Uses OpenFileDialog to bring up a file browser window,
@@ -244,7 +254,7 @@ namespace FlacToSpot
         private void ProcessFilesClick(object sender, EventArgs e)
         {
             bool success = true;
-            
+            this.Cursor = Cursors.WaitCursor;
             try
             {
                 if (dirHandler == null)
@@ -318,22 +328,7 @@ namespace FlacToSpot
             }
 
             ResetDisplay();
-
-        }
-
-        /// <summary>
-        /// Resets album instance, clears the file table,
-        /// and resets Process Files button
-        /// </summary>
-        private void ResetDisplay()
-        {
-            ProcessFilesButton.Text = "Process Files";
-            ProcessFilesButton.Enabled = true;
-            ProcessFilesButton.UseWaitCursor = false;
-            dirHandler.ResetAlbum();
-            this.SelectAlbumButton.Text = "Select Album Directory";
-            FileTable.Controls.Clear();
-            FileTable.RowStyles.Clear();
+            this.Cursor = Cursors.Arrow;
         }
 
         /// <summary>
@@ -345,6 +340,7 @@ namespace FlacToSpot
         {
             excelHandler.CleanUp();
         }
+
         /// <summary>
         /// Ran on application load
         /// </summary>
@@ -366,6 +362,26 @@ namespace FlacToSpot
             EndDatePicker.Enabled = EndDateCheck.Checked;
         }
 
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Resets album instance, clears the file table,
+        /// and resets Process Files button
+        /// </summary>
+        private void ResetDisplay()
+        {
+            ProcessFilesButton.Text = "Process Files";
+            ProcessFilesButton.Enabled = true;
+            ProcessFilesButton.UseWaitCursor = false;
+            dirHandler.ResetAlbum();
+            this.SelectAlbumButton.Text = "Select Album Directory";
+            FileTable.Controls.Clear();
+            FileTable.RowStyles.Clear();
+            FileTable.Refresh();
+        }
+
         /// <summary>
         /// Helper for retrieving date data for start and end dates
         /// </summary>
@@ -383,5 +399,7 @@ namespace FlacToSpot
 
             return dates;
         }
+
+        #endregion
     }
 }

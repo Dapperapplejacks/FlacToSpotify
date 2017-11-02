@@ -1,25 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Office.Interop.Excel;
-using System.Windows.Forms;
-using System.IO;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Runtime.InteropServices;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Handles reading the UPC/ISRC manifest and creating the metadata file
     /// </summary>
     class ExcelHandler
     {
+        /// <summary>
+        /// Field for Excel app 
+        /// </summary>
         private Microsoft.Office.Interop.Excel.Application xlApp;
+
+        /// <summary>
+        /// Field for all open workbooks
+        /// </summary>
         private Workbooks workbooks;
+
+        /// <summary>
+        /// Path to manifest
+        /// </summary>
         public string manifestPath;
+
+        /// <summary>
+        /// Field for manifest object
+        /// </summary>
         public Manifest manifest;
 
+        /// <summary>
+        /// Initializes a new instance of the ExcelHandler class
+        /// </summary>
         public ExcelHandler()
         {
             xlApp = new Microsoft.Office.Interop.Excel.Application();
@@ -48,9 +60,9 @@ namespace FlacToSpot
 
                 return manifest;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception("Error locating/reading UPC manifest");
+                throw new Exception("Error locating/reading UPC/ISRC manifest");
             }
         }
 

@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Class used for handling the album directory, destination directory, and coordinates the moving/renaming of files
     /// </summary>
     class DirectoryHandler
     {
+        #region Fields
 
-        #region Properties
         /// <summary>
         /// Instance of album currently selected by user
         /// </summary>
@@ -31,6 +26,12 @@ namespace FlacToSpot
         /// </summary>
         private string destDirPath;
 
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// Gets or sets album field
+        /// </summary>
         public Album Album
         {
             get
@@ -43,6 +44,9 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Gets or sets destination directory path field
+        /// </summary>
         public string DestinationDirectory
         {
             get
@@ -58,7 +62,10 @@ namespace FlacToSpot
         #endregion
 
         #region Constructor
-
+        /// <summary>
+        /// Initializes a new instance of the DirectoryHandler class
+        /// </summary>
+        /// <param name="dirpath">Path to chosen directory</param>
         public DirectoryHandler(string dirpath)
         {
             NewAlbum(dirpath);
@@ -209,7 +216,7 @@ namespace FlacToSpot
         private void RenameFiles()
         {
             album.CoverArt.FileName = "coverart" + album.CoverArt.Extension;
-            Application.ProcessProgress.PerformStep();
+            ((Application)Application.ActiveForm).ProcessProgress.PerformStep();
 
             //int cdCount = 1;
             foreach (CD cd in album.CDs)
@@ -227,7 +234,7 @@ namespace FlacToSpot
                         throw new Exception(ex.Message);
                     }
 
-                    Application.ProcessProgress.PerformStep();
+                    ((Application)Application.ActiveForm).ProcessProgress.PerformStep();
                 }
 
                 //cdCount++;
@@ -254,7 +261,7 @@ namespace FlacToSpot
                     throw new Exception(ex.Message);
                 }
 
-                Application.ProcessProgress.PerformStep();
+                ((Application)Application.ActiveForm).ProcessProgress.PerformStep();
             }
         }
 

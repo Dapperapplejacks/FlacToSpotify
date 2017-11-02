@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-namespace FlacToSpot
+namespace Spotifyify
 {
     partial class Application
     {
@@ -14,7 +14,7 @@ namespace FlacToSpot
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            
+
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -42,7 +42,7 @@ namespace FlacToSpot
             this.EndDatePicker = new System.Windows.Forms.DateTimePicker();
             this.StartDateLabel = new System.Windows.Forms.Label();
             this.EndDateCheck = new System.Windows.Forms.CheckBox();
-            ProcessProgress = new System.Windows.Forms.ProgressBar();
+            this.ProcessProgress = new System.Windows.Forms.ProgressBar();
             this.FileTable.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -214,16 +214,16 @@ namespace FlacToSpot
             // 
             // ProcessProgress
             // 
-            ProcessProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ProcessProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            ProcessProgress.Location = new System.Drawing.Point(12, 492);
-            ProcessProgress.Minimum = 1;
-            ProcessProgress.Name = "ProcessProgress";
-            ProcessProgress.Size = new System.Drawing.Size(461, 32);
-            ProcessProgress.Step = 1;
-            ProcessProgress.TabIndex = 11;
-            ProcessProgress.Value = 1;
-            ProcessProgress.Visible = false;
+            this.ProcessProgress.Location = new System.Drawing.Point(12, 492);
+            this.ProcessProgress.Minimum = 1;
+            this.ProcessProgress.Name = "ProcessProgress";
+            this.ProcessProgress.Size = new System.Drawing.Size(461, 32);
+            this.ProcessProgress.Step = 1;
+            this.ProcessProgress.TabIndex = 11;
+            this.ProcessProgress.Value = 1;
+            this.ProcessProgress.Visible = false;
             // 
             // Application
             // 
@@ -232,7 +232,7 @@ namespace FlacToSpot
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(484, 529);
-            this.Controls.Add(ProcessProgress);
+            this.Controls.Add(this.ProcessProgress);
             this.Controls.Add(this.EndDateCheck);
             this.Controls.Add(this.StartDateLabel);
             this.Controls.Add(this.EndDatePicker);
@@ -248,7 +248,7 @@ namespace FlacToSpot
             this.Name = "Application";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
-            this.Text = "Spotifyify v1.0";
+            this.Text = "Spotifyify v1.1";
             this.Load += new System.EventHandler(this.Application_Load);
             this.FileTable.ResumeLayout(false);
             this.FileTable.PerformLayout();
@@ -270,7 +270,7 @@ namespace FlacToSpot
         private System.Windows.Forms.DateTimePicker EndDatePicker;
         private System.Windows.Forms.Label StartDateLabel;
         private System.Windows.Forms.CheckBox EndDateCheck;
-        public static System.Windows.Forms.ProgressBar ProcessProgress;
+        public System.Windows.Forms.ProgressBar ProcessProgress;
     }
 }
 

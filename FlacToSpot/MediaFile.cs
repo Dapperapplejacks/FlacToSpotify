@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Base class for FlacFile and CoverArt objects
@@ -13,12 +13,46 @@ namespace FlacToSpot
     class MediaFile
     {
 
-        #region Properties
+        #region Fields
 
+        /// <summary>
+        /// File name of media file
+        /// </summary>
         private string fileName;
+
+        /// <summary>
+        /// Path to media file
+        /// </summary>
         private string path;
+
+        /// <summary>
+        /// Extension of media file (.xlsx, .jpg, etc...)
+        /// </summary>
         private string extension;
 
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the MediaFile class
+        /// </summary>
+        /// <param name="path">Path to media file</param>
+        public MediaFile(string path)
+        {
+            this.path = path;
+            fileName = System.IO.Path.GetFileName(path);
+            extension = System.IO.Path.GetExtension(path);
+        }
+
+        #endregion 
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets file name
+        /// Setting FileName will also move the file as well
+        /// </summary>
         public string FileName
         {
             get
@@ -34,6 +68,9 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Gets or sets path 
+        /// </summary>
         public string Path
         {
             get
@@ -46,6 +83,9 @@ namespace FlacToSpot
             }
         }
 
+        /// <summary>
+        /// Gets or sets file extension
+        /// </summary>
         public string Extension
         {
             get
@@ -58,14 +98,6 @@ namespace FlacToSpot
             }
         }
 
-
         #endregion
-
-        public MediaFile(string path)
-        {
-            this.path = path;
-            fileName = System.IO.Path.GetFileName(path);
-            extension = System.IO.Path.GetExtension(path);
-        }
     }
 }

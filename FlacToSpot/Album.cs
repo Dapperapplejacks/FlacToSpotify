@@ -1,67 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using Microsoft.Office.Interop.Excel;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
+using System.Linq;
 
-namespace FlacToSpot
+namespace Spotifyify
 {
     /// <summary>
     /// Represents an album which contains a list of CDs, and other information about the album
     /// </summary>
     class Album
     {
-        #region Properties
-        
+        #region Fields
+        /// <summary>
+        /// Array of all CDs for this album
+        /// </summary>
         private CD[] _CDs;
+
+        /// <summary>
+        /// Coverart object for this album
+        /// </summary>
         private CoverArt coverArt;
+
+        /// <summary>
+        /// Path to this album
+        /// </summary>
         private string path;
+
+        /// <summary>
+        /// UPC for this album
+        /// </summary>
         private Int64 UPC;
+
+        /// <summary>
+        /// Array of ISRCS for each song in this album
+        /// </summary>
         private string[] ISRCs;
+
+        /// <summary>
+        /// Array of FlacFile objects for this album
+        /// </summary>
         private FlacFile[] flacs;
 
-
-        public CD[] CDs
-        {
-            get
-            {
-                return _CDs;
-            }
-            private set
-            {
-                _CDs = value;
-            }
-        }
-        
-        public CoverArt CoverArt
-        {
-            get
-            {
-                return this.coverArt;
-            }
-            private set
-            {
-                this.coverArt = value;
-            }
-        }
-        
-        public string Path
-        {
-            get
-            {
-                return path;
-            }
-            set
-            {
-                path = value;
-            }
-        }
-
         #endregion
+
+        #region Constructor
+
         /// <summary>
         /// Creates instance of Album object.
         /// Will also call constructors for CD object for each CD in album.
@@ -133,42 +116,76 @@ namespace FlacToSpot
                 throw new Exception(ex.Message);
             }
         }
-        
+
+        #endregion
+
+        #region Properties
+
         /// <summary>
-        /// Helper for getting album title
+        /// Gets or sets CDs for this album
+        /// </summary>
+        public CD[] CDs
+        {
+            get
+            {
+                return _CDs;
+            }
+            private set
+            {
+                _CDs = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets coverart for this album
+        /// </summary>
+        public CoverArt CoverArt
+        {
+            get
+            {
+                return this.coverArt;
+            }
+            private set
+            {
+                this.coverArt = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets path for this album
+        /// </summary>
+        public string Path
+        {
+            get
+            {
+                return path;
+            }
+            set
+            {
+                path = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets FlacFile array
+        /// </summary>
+        public FlacFile[] Flacs
+        {
+            get { return flacs; }
+            private set { flacs = value; }
+        }
+
+        #endregion
+
+        #region Public methods
+
+        /// <summary>
+        /// Gets album title
         /// </summary>
         /// <returns>Title of album</returns>
         public string GetAlbumTitle()
         {
             return _CDs[0].FlacFiles[0].Tag.Album;
-        }
-
-        /// <summary>
-        /// Finds the cover art in the album directory. Will search through all .jpg and .jpeg files in directory.
-        /// </summary>
-        /// <returns>Instance of Coverart object representing the coverart for this album</returns>
-        private CoverArt ExtractCoverArt()
-        {
-            string[] coverArtPath1 = Directory.EnumerateFiles(path, "*.jpg").ToArray();
-            string[] coverArtPath2 = Directory.EnumerateFiles(path, "*.jpeg").ToArray();
-
-            if (coverArtPath1.Length == 0 && coverArtPath2.Length == 0)
-            {
-                throw new Exception("No cover art found with .jpg or .jpeg extensions");
-            }
-            else if (coverArtPath1.Length + coverArtPath2.Length > 1)
-            {
-                throw new Exception("Too many image files found");
-            }
-            else if (coverArtPath1.Length == 1)
-            {
-                return new CoverArt(coverArtPath1[0]);
-            }
-            else
-            {
-                return new CoverArt(coverArtPath2[0]);
-            }
-
         }
 
         /// <summary>
@@ -195,26 +212,9 @@ namespace FlacToSpot
         }
 
         /// <summary>
-        /// 
+        /// Gets Album title
         /// </summary>
-        /// <returns>List of all flac files in album</returns>
-        public FlacFile[] GetFlacs()
-        {
-            /*
-            List<FlacFile> flacFiles = new List<FlacFile>();
-
-            foreach (CD cd in _CDs)
-            {
-                foreach (FlacFile flac in cd.FlacFiles)
-                {
-                    flacFiles.Add(flac);
-                }
-            }
-
-            return flacFiles.ToArray();*/
-            return flacs;
-        }
-
+        /// <returns>Album title</returns>
         public string GetAlbumName()
         {
             try
@@ -259,7 +259,7 @@ namespace FlacToSpot
 
             string[] ISRCs = new string[GetTrackCount()];
 
-            string startISRC = manifest.GetISRC(GetAlbumName());
+            string startISRC = manifest.GetISRC();
             if (startISRC.Equals(""))
             {
                 ISRCs.Initialize();
@@ -280,22 +280,38 @@ namespace FlacToSpot
             return ISRCs;
         }
 
+        /// <summary>
+        /// Gets Artists on album
+        /// </summary>
+        /// <returns>Performers on album</returns>
         public string GetArtists()
         {
             string[] artists = _CDs[0].FlacFiles[0].Tag.Performers;
             return String.Join(", ", artists);
         }
 
+        /// <summary>
+        /// Gets Genre of album
+        /// </summary>
+        /// <returns>Genre of album</returns>
         public string GetGenre()
         {
             return _CDs[0].FlacFiles[0].Tag.FirstGenre;
         }
 
+        /// <summary>
+        /// Gets Release date of album
+        /// </summary>
+        /// <returns>Release data of album</returns>
         public string GetReleaseDate()
         {
             return _CDs[0].FlacFiles[0].Tag.Year.ToString();
         }
 
+        /// <summary>
+        /// Gets track count 
+        /// </summary>
+        /// <returns>Track count</returns>
         public int GetTrackCount()
         {
             int sum = 0;
@@ -304,6 +320,35 @@ namespace FlacToSpot
                 sum += cd.FlacFiles.Length;
             }
             return sum;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Finds the cover art in the album directory. Will search through all .jpg and .jpeg files in directory.
+        /// </summary>
+        /// <returns>Instance of Coverart object representing the coverart for this album</returns>
+        private CoverArt ExtractCoverArt()
+        {
+            string[] coverArtPath1 = Directory.EnumerateFiles(path, "*.jpg").ToArray();
+            string[] coverArtPath2 = Directory.EnumerateFiles(path, "*.jpeg").ToArray();
+
+            if (coverArtPath1.Length == 0 && coverArtPath2.Length == 0)
+            {
+                throw new Exception("No cover art found with .jpg or .jpeg extensions");
+            }
+            else if (coverArtPath1.Length + coverArtPath2.Length > 1)
+            {
+                throw new Exception("Too many image files found");
+            }
+            else if (coverArtPath1.Length == 1)
+            {
+                return new CoverArt(coverArtPath1[0]);
+            }
+            else
+            {
+                return new CoverArt(coverArtPath2[0]);
+            }
         }
     }
 }

@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-
-
-namespace FlacToSpot
+﻿namespace Spotifyify
 {
     /// <summary>
     /// Represents CD which keeps track of flac files on that CD
     /// </summary>
     class CD
     {
+        /// <summary>
+        /// Field for FlacFile array
+        /// </summary>
         private FlacFile[] flacFiles;
-        //private string path;
 
+        /// <summary>
+        /// Gets or sets flacFiles field
+        /// </summary>
         public FlacFile[] FlacFiles
         {
             get
@@ -28,18 +25,6 @@ namespace FlacToSpot
             }
         }
 
-        /*public string Path
-        {
-            get
-            {
-                return path;
-            }
-            private set
-            {
-                path = value;
-            }
-        }*/
-
         /// <summary>
         /// Creates instance of CD, finds flac files in the CD's directory
         /// </summary>
@@ -47,23 +32,6 @@ namespace FlacToSpot
         public CD(FlacFile[] flacs)
         {
             flacFiles = flacs;
-            /*
-            this.path = path;
-            
-            string[] flacFilePaths = Directory.EnumerateFiles(path, "*.flac").ToArray();
-
-            if (flacFilePaths.Length <= 0)
-            {
-                throw new Exception("No FLAC files found");
-            }
-
-            flacFiles = new FlacFile[flacFilePaths.Length];
-
-            for (int i = 0; i < flacFilePaths.Length; i++)
-            {
-                flacFiles[i] = new FlacFile(flacFilePaths[i]);
-            }
-             * */
         }
     }
 }
